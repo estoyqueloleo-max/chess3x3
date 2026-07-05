@@ -13,8 +13,6 @@ const shuffleArray = (array) => {
   return newArr;
 };
 
-const shuffledLevels = shuffleArray(generatedLevels);
-
 const PIECE_SYMBOLS = {
   KING: '♚',
   QUEEN: '♛',
@@ -103,6 +101,18 @@ const DragGhost = ({ piece, pos }) => {
 
 // ── App ───────────────────────────────────────────────────────────────────────
 function App() {
+  const [isShuffled, setIsShuffled] = useState(false);
+  const [shuffledLevels, setShuffledLevels] = useState(generatedLevels);
+  const [wasmReady, setWasmReady] = useState(false);
+
+  // ── Récords (localStorage keyed by level.id) ─────────────────────────────
+  const [records, setRecords] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('chess3x3_records') || '{}'); }
+    catch { return {}; }
+  });
+  const [isNewRecord, setIsNewRecord] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+
   const [currentLevel, setCurrentLevel] = useState(0);
   const [phase, setPhase] = useState('OBSERVATION');
   const [timeRemaining, setTimeRemaining] = useState(30);
@@ -155,7 +165,32 @@ function App() {
     setRotateUsesLeft(1);
   }, []);
 
-  useEffect(() => { loadLevel(currentLevel); }, [currentLevel, loadLevel]);
+  useEffect(() => { loadLevel(currentLevel); }, [currentLevel, loadLevel, shuffledLevels]);
+
+  // ── WASM Initialization ──────────────────────────────────────────────────────
+  useEffect(() => {
+    if (window.Go) {
+      const go = new window.Go();
+      WebAssembly.instantiateStreaming(fetch('/chess_engine.wasm'), go.importObject)
+        .then(result => {
+          go.run(result.instance);
+          setWasmReady(true);
+        })
+        .catch(console.error);
+    }
+  }, []);
+
+  // Handle shuffle toggle
+  const handleShuffleChange = useCallback((e) => {
+    const checked = e.target.checked;
+    setIsShuffled(checked);
+    if (checked) {
+      setShuffledLevels(shuffleArray(generatedLevels));
+    } else {
+      setShuffledLevels(generatedLevels);
+    }
+    setCurrentLevel(0); // Reiniciar al primer nivel
+  }, []);
 
   // Actualizar timer inicial si se cambia la configuración en fase OBSERVATION antes de empezar
   useEffect(() => {
@@ -185,9 +220,21 @@ function App() {
     });
 
     if (isMatch) {
+      // Save record
+      const levelId = shuffledLevels[currentLevel]?.id;
+      if (levelId) {
+        setRecords(prev => {
+          const prevBest = prev[levelId];
+          const newRecord = prevBest === undefined || movesUsed < prevBest;
+          setIsNewRecord(newRecord);
+          const updated = newRecord ? { ...prev, [levelId]: movesUsed } : prev;
+          if (newRecord) localStorage.setItem('chess3x3_records', JSON.stringify(updated));
+          return updated;
+        });
+      }
       setPhase('VICTORY');
     }
-  }, [targetBoard]);
+  }, [targetBoard, shuffledLevels, currentLevel]);
 
   // ── Execute a move ─────────────────────────────────────────────────────────
   const executeMove = useCallback((fromIdx, toIdx) => {
@@ -299,39 +346,43 @@ function App() {
     setValidMoves([]);
   }, [phase, moveHistory, currentMovesCount]);
 
-  // ── Mecánica: REPLAY SOLUCIÓN ──────────────────────────────────────────────
+  // ── Mecánica: REPLAY SOLUCIÓN (WASM) ───────────────────────────────────────
+  const [dynamicPath, setDynamicPath] = useState(null);
+
   const startSolutionReplay = useCallback(() => {
-    setPhase('SOLUTION_REPLAY');
-    setReplayStep(0);
+    if (!wasmReady || !window.getOptimalPathWasm) return;
     
-    // Si estamos invertidos, el origen de la animación es el Target
-    const lvl = shuffledLevels[currentLevel];
-    setCurrentBoard(isInverted ? lvl.targetBoard.map(p => p) : lvl.startBoard.map(p => p));
-  }, [currentLevel, isInverted]);
+    // Si ya ganó, mostramos la solución desde el principio. Si se rindió a medias, desde donde estaba.
+    const startForReplay = phase === 'VICTORY' 
+      ? (isInverted ? shuffledLevels[currentLevel].targetBoard : shuffledLevels[currentLevel].startBoard)
+      : currentBoard;
+
+    const path = window.getOptimalPathWasm(startForReplay, targetBoard);
+    
+    if (path && path.length > 0) {
+      setDynamicPath(path);
+      setPhase('SOLUTION_REPLAY');
+      setReplayStep(0);
+    } else {
+      setPhase('GAMEOVER');
+    }
+  }, [currentBoard, targetBoard, wasmReady, phase, currentLevel, isInverted, shuffledLevels]);
 
   useEffect(() => {
     if (phase === 'SOLUTION_REPLAY') {
-      const basePath = shuffledLevels[currentLevel].solutionPath;
-      if (!basePath) {
-        setPhase('GAMEOVER');
-        return;
-      }
-      
-      const path = isInverted ? [...basePath].reverse() : basePath;
-
-      if (replayStep >= path.length) {
+      if (!dynamicPath || replayStep >= dynamicPath.length) {
         setPhase('GAMEOVER'); // Terminó la animación
         return;
       }
 
       const timer = setTimeout(() => {
-        setCurrentBoard(path[replayStep].map(p => p));
+        setCurrentBoard(dynamicPath[replayStep].map(p => p));
         setReplayStep(r => r + 1);
       }, 700);
 
       return () => clearTimeout(timer);
     }
-  }, [phase, replayStep, currentLevel, isInverted]);
+  }, [phase, replayStep, dynamicPath]);
 
   // ── Click handler ──────────────────────────────────────────────────────────
   const handleCellClick = useCallback((index) => {
@@ -444,6 +495,11 @@ function App() {
   };
 
   const level = shuffledLevels[currentLevel];
+  const currentBest = records[level?.id];
+
+  // Stats summary
+  const totalSolved = generatedLevels.filter(l => records[l.id] !== undefined).length;
+  const totalPerfect = generatedLevels.filter(l => records[l.id] !== undefined && records[l.id] <= l.optimalMoves).length;
 
   // El "reverso" que veremos al hacer flip del tablero objetivo es el estado inicial original
   const flipBackBoard = shuffledLevels[currentLevel]?.startBoard ?? Array(9).fill(null);
@@ -459,6 +515,9 @@ function App() {
         <div className="header-title">Chess 3×3</div>
         <div className="header-meta">
           Nivel {currentLevel + 1}
+          <span style={{ marginLeft: '8px', color: currentBest !== undefined ? '#f59e0b' : '#475569', fontSize: '0.78rem' }}>
+            🏆 {currentBest !== undefined ? currentBest : '--'}
+          </span>
           <select 
             value={timerSetting === Infinity ? 'inf' : timerSetting} 
             onChange={(e) => {
@@ -472,7 +531,21 @@ function App() {
             <option value="60">60s</option>
             <option value="inf">∞</option>
           </select>
+          <label style={{ marginLeft: '10px', display: 'inline-flex', alignItems: 'center', cursor: 'pointer', color: '#94a3b8', fontSize: '0.8rem' }}>
+            <input 
+              type="checkbox" 
+              checked={isShuffled}
+              onChange={handleShuffleChange}
+              style={{ marginRight: '4px' }}
+            />
+            Barajar
+          </label>
         </div>
+        <button
+          onClick={() => setShowStats(true)}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: '0 6px', opacity: 0.7 }}
+          title="Ver estadísticas"
+        >🏆</button>
         <div className="header-timer">
           {phase === 'OBSERVATION' && timeRemaining === Infinity && `∞`}
           {phase === 'OBSERVATION' && timeRemaining !== Infinity && `${timeRemaining.toString().padStart(2, '0')}s`}
@@ -615,6 +688,11 @@ function App() {
             ) : (
               <h2 className="defeat-text">Solución 🏳️</h2>
             )}
+            {phase === 'VICTORY' && isNewRecord && (
+              <div style={{ background: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '8px', padding: '6px 12px', marginBottom: '8px', color: '#f59e0b', fontSize: '0.9rem', fontWeight: 600 }}>
+                ⭐ ¡Nuevo Récord Personal!
+              </div>
+            )}
             <p className="modal-hint">
               {phase === 'VICTORY'
                 ? `Resolviste en ${currentMovesCount} movimiento${currentMovesCount !== 1 ? 's' : ''} (apuesta: ${bidMoves})`
@@ -622,12 +700,86 @@ function App() {
             </p>
             <div className="modal-buttons">
               <button onClick={() => loadLevel(currentLevel)}>Reintentar</button>
+              
+              {/* Botón Analizar si ganó pero fue subóptimo */}
+              {phase === 'VICTORY' && currentMovesCount > level?.optimalMoves && wasmReady && (
+                <button className="btn-action" onClick={startSolutionReplay} style={{ color: '#3b82f6', borderColor: 'rgba(59, 130, 246, 0.4)' }}>
+                  🧠 Analizar óptimo
+                </button>
+              )}
+
               {currentLevel < shuffledLevels.length - 1 && phase === 'VICTORY' && (
                 <button className="btn-success" onClick={() => setCurrentLevel(l => l + 1)}>
                   Siguiente →
                 </button>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Estadísticas */}
+      {showStats && (
+        <div className="modal-overlay" onClick={() => setShowStats(false)}>
+          <div className="modal-content" style={{ maxWidth: '420px', maxHeight: '80dvh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+            <h2 style={{ marginBottom: '4px' }}>🏆 Estadísticas</h2>
+            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '16px', flexWrap: 'wrap' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#3b82f6' }}>{totalSolved}</div>
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Resueltos</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#f59e0b' }}>{totalPerfect}</div>
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Perfectos ⭐</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#64748b' }}>{generatedLevels.length - totalSolved}</div>
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Pendientes</div>
+              </div>
+            </div>
+
+            {/* Grid de niveles */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(10, 1fr)', gap: '4px' }}>
+              {generatedLevels.map((lvl, i) => {
+                const best = records[lvl.id];
+                const isPerfect = best !== undefined && best <= lvl.optimalMoves;
+                const isSolved = best !== undefined;
+                return (
+                  <button
+                    key={lvl.id}
+                    onClick={() => {
+                      // Encontrar este nivel en el deck actual
+                      const idx = shuffledLevels.findIndex(l => l.id === lvl.id);
+                      if (idx !== -1) { setCurrentLevel(idx); setShowStats(false); }
+                    }}
+                    title={isSolved ? `Mejor: ${best} mov (óptimo: ${lvl.optimalMoves})` : `Sin resolver`}
+                    style={{
+                      width: '100%',
+                      aspectRatio: '1',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '0.55rem',
+                      fontWeight: 700,
+                      background: isPerfect
+                        ? 'rgba(245, 158, 11, 0.8)'
+                        : isSolved
+                          ? 'rgba(59, 130, 246, 0.5)'
+                          : 'rgba(71, 85, 105, 0.4)',
+                      color: isSolved ? '#fff' : '#64748b',
+                    }}
+                  >
+                    {isSolved ? best : i + 1}
+                  </button>
+                );
+              })}
+            </div>
+            <p style={{ fontSize: '0.7rem', color: '#475569', marginTop: '10px', textAlign: 'center' }}>
+              <span style={{ color: '#f59e0b' }}>⬛ Perfecto</span> &nbsp;
+              <span style={{ color: '#3b82f6' }}>⬛ Resuelto</span> &nbsp;
+              <span style={{ color: '#475569' }}>⬛ Pendiente</span>
+            </p>
+            <button onClick={() => setShowStats(false)} style={{ marginTop: '8px', width: '100%' }}>Cerrar</button>
           </div>
         </div>
       )}

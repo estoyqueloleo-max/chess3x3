@@ -94,9 +94,17 @@ go run .
 ## 📋 Backlog de Mejoras
 
 ### Pendiente
+- [ ] **Timeline interactivo / Bifurcaciones** — Añadir un *slider* para navegar por el historial de movimientos y explorar visualmente las ramificaciones del camino óptimo que sugiere el motor WASM.
 - [ ] **Tabla de puntuaciones** — Registro local de mejores marcas por nivel.
 - [ ] **Modo oscuro/claro** — Toggle de tema.
 - [ ] **Modo 2 jugadores local** — Turnos alternativos, cada uno apuesta sus movimientos.
+
+### Exploración Futura: Tablero 4x4
+Una de las ideas más potentes para expandir el juego es aumentar el tablero a **4x4**. 
+- **Dificultad Matemática:** Sería un salto masivo en complejidad. Mientras que el 3x3 con 5 piezas tiene exactamente 5.880 estados posibles, un 4x4 tendría $16! / 11! = 524.160$ combinaciones únicas (casi 100 veces más grande). La profundidad de los puzzles sería mucho mayor (puzzles de 15-20 movimientos).
+- **¿Precalcular o WASM?** 
+  - Para generar las tarjetas, seguiríamos usando el script precalculado en Go, ya que elegir las tarjetas óptimas por Maximin entre 500k nodos tardaría un rato.
+  - Para el **motor WASM de análisis en vivo**, un BFS completo de medio millón de nodos podría dar un pequeño tirón en el móvil (unos cientos de milisegundos). Para hacerlo instantáneo, tendríamos que mejorar el algoritmo en Go pasando de un simple BFS a **BFS Bidireccional** o **A***. Con esas mejoras, el motor WASM seguiría siendo capaz de corregirte los pasos en tiempo real sin problema.
 
 ### Decisiones de diseño tomadas
 - **Niveles predefinidos vs. aleatorios:** Se optó por un generador offline (Go script) para garantizar solución matemática y tiempos de carga instantáneos.
