@@ -348,6 +348,7 @@ function App() {
 
   // ── Mecánica: REPLAY SOLUCIÓN (WASM) ───────────────────────────────────────
   const [dynamicPath, setDynamicPath] = useState(null);
+  const [replayPaused, setReplayPaused] = useState(false);
 
   const startSolutionReplay = useCallback(() => {
     if (!wasmReady || !window.getOptimalPathWasm) return;
@@ -369,7 +370,7 @@ function App() {
   }, [currentBoard, targetBoard, wasmReady, phase, currentLevel, isInverted, shuffledLevels]);
 
   useEffect(() => {
-    if (phase === 'SOLUTION_REPLAY') {
+    if (phase === 'SOLUTION_REPLAY' && !replayPaused) {
       if (!dynamicPath || replayStep >= dynamicPath.length) {
         setPhase('GAMEOVER'); // Terminó la animación
         return;
@@ -382,7 +383,7 @@ function App() {
 
       return () => clearTimeout(timer);
     }
-  }, [phase, replayStep, dynamicPath]);
+  }, [phase, replayStep, dynamicPath, replayPaused]);
 
   // ── Click handler ──────────────────────────────────────────────────────────
   const handleCellClick = useCallback((index) => {
@@ -560,7 +561,9 @@ function App() {
         {/* ── Tablero de Juego (Reverso) ── */}
         <div className={`board-container play-container ${isInverted ? 'inverted-active' : ''}`}>
           <span className="board-label">
-            {phase === 'OBSERVATION' ? '🔒 Observa' : '♟ Tu Tablero'}
+            {phase === 'SOLUTION_REPLAY'
+              ? `▶ Paso ${Math.min(replayStep, dynamicPath ? dynamicPath.length - 1 : 0) + 1} / ${dynamicPath?.length ?? '?'}`
+              : phase === 'OBSERVATION' ? '🔒 Observa' : '♟ Tu Tablero'}
           </span>
           <Board
             board={currentBoard}
@@ -573,6 +576,41 @@ function App() {
             onDragEnter={handleDragEnter}
             dragOverCell={dragOverCell}
           />
+
+          {/* ── Slider de Timeline (solo en SOLUTION_REPLAY) ── */}
+          {phase === 'SOLUTION_REPLAY' && dynamicPath && (
+            <div style={{ width: '100%', padding: '6px 0 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                onClick={() => setReplayPaused(p => !p)}
+                style={{
+                  flexShrink: 0,
+                  background: 'rgba(30,41,59,0.8)',
+                  border: '1px solid #334155',
+                  borderRadius: '6px',
+                  color: '#f1f5f9',
+                  padding: '4px 10px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                }}
+              >
+                {replayPaused ? '▶' : '⏸'}
+              </button>
+              <input
+                type="range"
+                min={0}
+                max={dynamicPath.length - 1}
+                value={Math.min(replayStep, dynamicPath.length - 1)}
+                onMouseDown={() => setReplayPaused(true)}
+                onTouchStart={() => setReplayPaused(true)}
+                onChange={(e) => {
+                  const step = parseInt(e.target.value, 10);
+                  setReplayStep(step);
+                  setCurrentBoard(dynamicPath[step].map(p => p));
+                }}
+                style={{ flex: 1, accentColor: '#3b82f6' }}
+              />
+            </div>
+          )}
         </div>
 
         {/* ── Barra de acciones de tarjeta ── */}
@@ -718,68 +756,102 @@ function App() {
         </div>
       )}
 
-      {/* Modal Estadísticas */}
+      {/* Panel Estadísticas — pantalla completa con grid escalable */}
       {showStats && (
-        <div className="modal-overlay" onClick={() => setShowStats(false)}>
-          <div className="modal-content" style={{ maxWidth: '420px', maxHeight: '80dvh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
-            <h2 style={{ marginBottom: '4px' }}>🏆 Estadísticas</h2>
-            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '16px', flexWrap: 'wrap' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#3b82f6' }}>{totalSolved}</div>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Resueltos</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#f59e0b' }}>{totalPerfect}</div>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Perfectos ⭐</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#64748b' }}>{generatedLevels.length - totalSolved}</div>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Pendientes</div>
+        <div
+          onClick={() => setShowStats(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 200,
+            background: 'rgba(2, 6, 23, 0.96)',
+            display: 'flex', flexDirection: 'column',
+            padding: '12px 12px 8px',
+            boxSizing: 'border-box',
+          }}
+        >
+          <div onClick={e => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '10px' }}>
+
+            {/* Cabecera */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+              <h2 style={{ margin: 0, fontSize: '1.1rem', color: '#f1f5f9' }}>🏆 Estadísticas</h2>
+              <button onClick={() => setShowStats(false)} style={{ background: 'none', border: '1px solid #334155', color: '#94a3b8', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer' }}>✕</button>
+            </div>
+
+            {/* Contadores */}
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexShrink: 0 }}>
+              {[
+                { val: totalSolved, label: 'Resueltos', color: '#3b82f6' },
+                { val: totalPerfect, label: 'Perfectos ⭐', color: '#f59e0b' },
+                { val: generatedLevels.length - totalSolved, label: 'Pendientes', color: '#64748b' },
+              ].map(({ val, label, color }) => (
+                <div key={label} style={{ textAlign: 'center', background: 'rgba(30,41,59,0.7)', borderRadius: '10px', padding: '8px 14px' }}>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 800, color }}>{val}</div>
+                  <div style={{ fontSize: '0.68rem', color: '#94a3b8' }}>{label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Grid auto-escalado para llenar el espacio disponible */}
+            <div
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                minHeight: 0,
+              }}
+            >
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(10, 1fr)',
+                  gap: '3px',
+                  width: 'min(100%, min(90dvh, 90dvw))',
+                }}
+              >
+                {generatedLevels.map((lvl, i) => {
+                  const best = records[lvl.id];
+                  const isPerfect = best !== undefined && best <= lvl.optimalMoves;
+                  const isSolved = best !== undefined;
+                  return (
+                    <button
+                      key={lvl.id}
+                      onClick={() => {
+                        const idx = shuffledLevels.findIndex(l => l.id === lvl.id);
+                        if (idx !== -1) { setCurrentLevel(idx); setShowStats(false); }
+                      }}
+                      title={isSolved ? `Mejor: ${best} mov (óptimo: ${lvl.optimalMoves})` : `Sin resolver`}
+                      style={{
+                        aspectRatio: '1',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: 'clamp(0.45rem, 1.5vw, 0.7rem)',
+                        fontWeight: 700,
+                        background: isPerfect
+                          ? 'rgba(245, 158, 11, 0.85)'
+                          : isSolved
+                            ? 'rgba(59, 130, 246, 0.6)'
+                            : 'rgba(51, 65, 85, 0.6)',
+                        color: isSolved ? '#fff' : '#64748b',
+                        transition: 'transform 0.1s',
+                      }}
+                      onPointerDown={e => e.currentTarget.style.transform = 'scale(0.9)'}
+                      onPointerUp={e => e.currentTarget.style.transform = 'scale(1)'}
+                    >
+                      {isSolved ? best : i + 1}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Grid de niveles */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(10, 1fr)', gap: '4px' }}>
-              {generatedLevels.map((lvl, i) => {
-                const best = records[lvl.id];
-                const isPerfect = best !== undefined && best <= lvl.optimalMoves;
-                const isSolved = best !== undefined;
-                return (
-                  <button
-                    key={lvl.id}
-                    onClick={() => {
-                      // Encontrar este nivel en el deck actual
-                      const idx = shuffledLevels.findIndex(l => l.id === lvl.id);
-                      if (idx !== -1) { setCurrentLevel(idx); setShowStats(false); }
-                    }}
-                    title={isSolved ? `Mejor: ${best} mov (óptimo: ${lvl.optimalMoves})` : `Sin resolver`}
-                    style={{
-                      width: '100%',
-                      aspectRatio: '1',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontSize: '0.55rem',
-                      fontWeight: 700,
-                      background: isPerfect
-                        ? 'rgba(245, 158, 11, 0.8)'
-                        : isSolved
-                          ? 'rgba(59, 130, 246, 0.5)'
-                          : 'rgba(71, 85, 105, 0.4)',
-                      color: isSolved ? '#fff' : '#64748b',
-                    }}
-                  >
-                    {isSolved ? best : i + 1}
-                  </button>
-                );
-              })}
+            {/* Leyenda */}
+            <div style={{ textAlign: 'center', fontSize: '0.65rem', color: '#475569', flexShrink: 0 }}>
+              <span style={{ color: '#f59e0b' }}>● Perfecto</span>&nbsp;&nbsp;
+              <span style={{ color: '#3b82f6' }}>● Resuelto</span>&nbsp;&nbsp;
+              <span style={{ color: '#475569' }}>● Pendiente</span>
             </div>
-            <p style={{ fontSize: '0.7rem', color: '#475569', marginTop: '10px', textAlign: 'center' }}>
-              <span style={{ color: '#f59e0b' }}>⬛ Perfecto</span> &nbsp;
-              <span style={{ color: '#3b82f6' }}>⬛ Resuelto</span> &nbsp;
-              <span style={{ color: '#475569' }}>⬛ Pendiente</span>
-            </p>
-            <button onClick={() => setShowStats(false)} style={{ marginTop: '8px', width: '100%' }}>Cerrar</button>
           </div>
         </div>
       )}

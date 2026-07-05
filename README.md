@@ -94,10 +94,15 @@ go run .
 ## 📋 Backlog de Mejoras
 
 ### Pendiente
-- [ ] **Timeline interactivo / Bifurcaciones** — Añadir un *slider* para navegar por el historial de movimientos y explorar visualmente las ramificaciones del camino óptimo que sugiere el motor WASM.
-- [ ] **Tabla de puntuaciones** — Registro local de mejores marcas por nivel.
+- [x] **Tabla de puntuaciones** — Registro local de mejores marcas por nivel (via `localStorage`).
+- [ ] **Slider de Timeline en Replay** — Mostrar un slider durante la animación de solución para retroceder o avanzar libremente por los pasos del camino óptimo.
 - [ ] **Modo oscuro/claro** — Toggle de tema.
-- [ ] **Modo 2 jugadores local** — Turnos alternativos, cada uno apuesta sus movimientos.
+
+### Modo Multijugador
+Se han explorado varias opciones de integración con Pingo (P2P via PeerJS). Ver detalles completos en [`TODO_multiplayer_options.md`](TODO_multiplayer_options.md).
+- **Opción A** — Plugin iframe + postMessage (✅ Recomendada para empezar).
+- **Opción B** — Librería compartida Chess 3x3 con bundle propio.
+- **Opción C** — Importación directa de módulos ES desde Pingo.
 
 ### Exploración Futura: Tablero 4x4
 Una de las ideas más potentes para expandir el juego es aumentar el tablero a **4x4**. 
