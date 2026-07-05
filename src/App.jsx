@@ -3,6 +3,18 @@ import './index.css';
 import { getValidMoves } from './logic/chessEngine';
 import generatedLevels from './logic/generated_levels.json';
 
+// Barajar los niveles al inicio de la aplicación
+const shuffleArray = (array) => {
+  const newArr = [...array];
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+  }
+  return newArr;
+};
+
+const shuffledLevels = shuffleArray(generatedLevels);
+
 const PIECE_SYMBOLS = {
   KING: '♚',
   QUEEN: '♛',
@@ -22,7 +34,6 @@ const Board = ({
   draggingFrom,
   onDragStart,
   onDragEnter,
-  onDragEnd,
   dragOverCell,
 }) => {
   return (
@@ -63,6 +74,20 @@ const Board = ({
   );
 };
 
+// ── Flippable board wrapper (3D CSS flip) ────────────────────────────────────
+const FlippableBoard = ({ frontBoard, backBoard, isFlipped, ...boardProps }) => (
+  <div className="board-flip-wrapper">
+    <div className={`board-flip-inner ${isFlipped ? 'flipped' : ''}`}>
+      <div className="board-flip-front">
+        <Board board={frontBoard} {...boardProps} />
+      </div>
+      <div className="board-flip-back">
+        <Board board={backBoard} isInteractive={false} selectedCell={null} validMoves={[]} />
+      </div>
+    </div>
+  </div>
+);
+
 // ── Ghost piece that follows pointer ─────────────────────────────────────────
 const DragGhost = ({ piece, pos }) => {
   if (!piece || !pos) return null;
@@ -85,12 +110,22 @@ function App() {
   const [targetBoard, setTargetBoard] = useState(Array(9).fill(null));
   const [currentBoard, setCurrentBoard] = useState(Array(9).fill(null));
 
+  // ── Mecánica de tarjeta física ───────────────────────────────────────────
+  // isInverted: los tableros han sido intercambiados (start ↔ target)
+  const [isInverted, setIsInverted] = useState(false);
+  // isFlipped: toggle visual — muestra el reverso de la tarjeta objetivo con flip 3D
+  const [isFlipped, setIsFlipped] = useState(false);
+
   const [selectedCell, setSelectedCell] = useState(null);
   const [validMoves, setValidMoves] = useState([]);
 
   const [bidMoves, setBidMoves] = useState(0);
   const [currentMovesCount, setCurrentMovesCount] = useState(0);
   const [bidInput, setBidInput] = useState('');
+  const [moveHistory, setMoveHistory] = useState([]);
+  const [rotateUsesLeft, setRotateUsesLeft] = useState(1);
+  const [timerSetting, setTimerSetting] = useState(30); // 30, 60, Infinity
+  const [replayStep, setReplayStep] = useState(0);
 
   // ── Drag state ─────────────────────────────────────────────────────────────
   const [draggingFrom, setDraggingFrom] = useState(null);
@@ -102,26 +137,37 @@ function App() {
 
   // ── Level loading ──────────────────────────────────────────────────────────
   const loadLevel = useCallback((levelIndex) => {
-    const level = generatedLevels[levelIndex];
+    const level = shuffledLevels[levelIndex];
     setTargetBoard(level.targetBoard);
     setCurrentBoard(level.startBoard);
     setPhase('OBSERVATION');
-    setTimeRemaining(30);
+    setTimeRemaining(timerSetting);
     setBidMoves(0);
     setCurrentMovesCount(0);
+    setMoveHistory([]);
     setSelectedCell(null);
     setValidMoves([]);
     setDraggingFrom(null);
     setDragPos(null);
     setDragOverCell(null);
+    setIsInverted(false);
+    setIsFlipped(false);
+    setRotateUsesLeft(1);
   }, []);
 
   useEffect(() => { loadLevel(currentLevel); }, [currentLevel, loadLevel]);
 
+  // Actualizar timer inicial si se cambia la configuración en fase OBSERVATION antes de empezar
+  useEffect(() => {
+    if (phase === 'OBSERVATION') {
+      setTimeRemaining(timerSetting);
+    }
+  }, [timerSetting]); // omit phase so it only triggers on setting change (or unmount/mount)
+
   // ── Timer ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     let timer;
-    if (phase === 'OBSERVATION' && timeRemaining > 0) {
+    if (phase === 'OBSERVATION' && timeRemaining > 0 && timeRemaining !== Infinity) {
       timer = setTimeout(() => setTimeRemaining(t => t - 1), 1000);
     } else if (phase === 'OBSERVATION' && timeRemaining === 0) {
       setPhase('BIDDING');
@@ -140,10 +186,8 @@ function App() {
 
     if (isMatch) {
       setPhase('VICTORY');
-    } else if (movesUsed >= bidMoves) {
-      setPhase('GAMEOVER');
     }
-  }, [targetBoard, bidMoves]);
+  }, [targetBoard]);
 
   // ── Execute a move ─────────────────────────────────────────────────────────
   const executeMove = useCallback((fromIdx, toIdx) => {
@@ -152,14 +196,142 @@ function App() {
     const newBoard = [...currentBoard];
     newBoard[toIdx] = newBoard[fromIdx];
     newBoard[fromIdx] = null;
+
+    // Detectar retroceso manual (el jugador devuelve la pieza a donde estaba)
+    if (moveHistory.length > 0) {
+      const lastState = moveHistory[moveHistory.length - 1];
+      const isUndo = newBoard.every((p, i) => {
+        if (p === null && lastState[i] === null) return true;
+        if (p !== null && lastState[i] !== null) return p.id === lastState[i].id;
+        return false;
+      });
+
+      if (isUndo) {
+        // Es un deshacer físico: restaurar tablero, restar contador y limpiar último historial
+        setCurrentBoard(newBoard);
+        setCurrentMovesCount(Math.max(0, currentMovesCount - 1));
+        setMoveHistory(prev => prev.slice(0, -1));
+        setSelectedCell(null);
+        setValidMoves([]);
+        return;
+      }
+    }
+
     setCurrentBoard(newBoard);
+    setMoveHistory(prev => [...prev, currentBoard]); // Guardar estado ANTES de mover
 
     const nextCount = currentMovesCount + 1;
     setCurrentMovesCount(nextCount);
     setSelectedCell(null);
     setValidMoves([]);
     checkWinCondition(newBoard, nextCount);
-  }, [currentBoard, currentMovesCount, checkWinCondition]);
+  }, [currentBoard, currentMovesCount, checkWinCondition, moveHistory]);
+
+  // ── Mecánica: INVERTIR tableros ────────────────────────────────────────────
+  // En OBSERVATION/BIDDING: gratuito (sin coste de movimiento)
+  // En EXECUTION: +1 movimiento (como acción física de elegir el reverso)
+  const handleInvertCorrect = useCallback(() => {
+    setIsFlipped(false);
+
+    // Primera vez que cargamos el nivel, guardamos el target original
+    const level = shuffledLevels[currentLevel];
+    const origTarget = level.targetBoard;
+    const origStart = level.startBoard;
+
+    if (!isInverted) {
+      // Elegir el reverso: empezamos desde la posición objetivo, queremos llegar al inicio
+      setCurrentBoard(origTarget.map(p => p));
+      setTargetBoard(origStart.map(p => p));
+      setIsInverted(true);
+    } else {
+      // Deshacer inversión
+      setCurrentBoard(origStart.map(p => p));
+      setTargetBoard(origTarget.map(p => p));
+      setIsInverted(false);
+    }
+
+    setSelectedCell(null);
+    setValidMoves([]);
+
+    if (phase === 'EXECUTION') {
+      const nextCount = currentMovesCount + 1;
+      setCurrentMovesCount(nextCount);
+      setMoveHistory([]); // Al invertir se pierde el historial porque cambian los objetivos
+    }
+  }, [isInverted, phase, currentLevel, currentMovesCount]);
+
+  // ── Mecánica: VER REVERSO (solo toggle visual en fase inicial) ─────────────
+  const handleToggleFlip = useCallback(() => {
+    if (phase !== 'EXECUTION') {
+      setIsFlipped(f => !f);
+    }
+  }, [phase]);
+
+  // ── Mecánica: ROTAR CARTA (1 uso en ejecución) ─────────────────────────────
+  const handleRotate = useCallback(() => {
+    if (phase !== 'EXECUTION' || rotateUsesLeft <= 0) return;
+    
+    // Rotar 90 grados en sentido horario
+    const rotated = Array(9).fill(null);
+    rotated[0] = targetBoard[6];
+    rotated[1] = targetBoard[3];
+    rotated[2] = targetBoard[0];
+    rotated[3] = targetBoard[7];
+    rotated[4] = targetBoard[4];
+    rotated[5] = targetBoard[1];
+    rotated[6] = targetBoard[8];
+    rotated[7] = targetBoard[5];
+    rotated[8] = targetBoard[2];
+
+    setTargetBoard(rotated);
+    setRotateUsesLeft(0);
+  }, [phase, rotateUsesLeft, targetBoard]);
+
+  // ── Mecánica: DESHACER (automático por botón) ─────────────────────────────
+  const handleUndo = useCallback(() => {
+    if (phase !== 'EXECUTION' || moveHistory.length === 0) return;
+    
+    const lastState = moveHistory[moveHistory.length - 1];
+    setCurrentBoard(lastState);
+    setCurrentMovesCount(Math.max(0, currentMovesCount - 1));
+    setMoveHistory(prev => prev.slice(0, -1));
+    setSelectedCell(null);
+    setValidMoves([]);
+  }, [phase, moveHistory, currentMovesCount]);
+
+  // ── Mecánica: REPLAY SOLUCIÓN ──────────────────────────────────────────────
+  const startSolutionReplay = useCallback(() => {
+    setPhase('SOLUTION_REPLAY');
+    setReplayStep(0);
+    
+    // Si estamos invertidos, el origen de la animación es el Target
+    const lvl = shuffledLevels[currentLevel];
+    setCurrentBoard(isInverted ? lvl.targetBoard.map(p => p) : lvl.startBoard.map(p => p));
+  }, [currentLevel, isInverted]);
+
+  useEffect(() => {
+    if (phase === 'SOLUTION_REPLAY') {
+      const basePath = shuffledLevels[currentLevel].solutionPath;
+      if (!basePath) {
+        setPhase('GAMEOVER');
+        return;
+      }
+      
+      const path = isInverted ? [...basePath].reverse() : basePath;
+
+      if (replayStep >= path.length) {
+        setPhase('GAMEOVER'); // Terminó la animación
+        return;
+      }
+
+      const timer = setTimeout(() => {
+        setCurrentBoard(path[replayStep].map(p => p));
+        setReplayStep(r => r + 1);
+      }, 700);
+
+      return () => clearTimeout(timer);
+    }
+  }, [phase, replayStep, currentLevel, isInverted]);
 
   // ── Click handler ──────────────────────────────────────────────────────────
   const handleCellClick = useCallback((index) => {
@@ -257,10 +429,28 @@ function App() {
       setBidMoves(bid);
       setPhase('EXECUTION');
       setBidInput('');
+
+      // Si la dejamos en el reverso, cobramos movimiento y empezamos invertidos
+      if (isFlipped) {
+        setIsFlipped(false);
+        setIsInverted(true);
+        setCurrentMovesCount(1);
+        
+        const lvl = shuffledLevels[currentLevel];
+        setCurrentBoard(lvl.targetBoard.map(p => p));
+        setTargetBoard(lvl.startBoard.map(p => p));
+      }
     }
   };
 
-  const level = generatedLevels[currentLevel];
+  const level = shuffledLevels[currentLevel];
+
+  // El "reverso" que veremos al hacer flip del tablero objetivo es el estado inicial original
+  const flipBackBoard = shuffledLevels[currentLevel]?.startBoard ?? Array(9).fill(null);
+  // Si está invertido, el reverso del objetivo (que es el start original) es el target original
+  const flipBackBoardEffective = isInverted
+    ? (shuffledLevels[currentLevel]?.targetBoard ?? Array(9).fill(null))
+    : flipBackBoard;
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
@@ -269,28 +459,33 @@ function App() {
         <div className="header-title">Chess 3×3</div>
         <div className="header-meta">
           Nivel {currentLevel + 1}
-          {level && <span className="header-optimal"> · óptimo: {level.optimalMoves}</span>}
+          <select 
+            value={timerSetting === Infinity ? 'inf' : timerSetting} 
+            onChange={(e) => {
+              const val = e.target.value === 'inf' ? Infinity : parseInt(e.target.value, 10);
+              setTimerSetting(val);
+            }}
+            className="timer-select"
+            style={{ marginLeft: '10px', background: 'transparent', color: '#94a3b8', border: 'none', outline: 'none', cursor: 'pointer' }}
+          >
+            <option value="30">30s</option>
+            <option value="60">60s</option>
+            <option value="inf">∞</option>
+          </select>
         </div>
         <div className="header-timer">
-          {phase === 'OBSERVATION' && `${timeRemaining.toString().padStart(2, '0')}s`}
+          {phase === 'OBSERVATION' && timeRemaining === Infinity && `∞`}
+          {phase === 'OBSERVATION' && timeRemaining !== Infinity && `${timeRemaining.toString().padStart(2, '0')}s`}
           {phase === 'EXECUTION' && `${currentMovesCount} / ${bidMoves}`}
           {phase === 'BIDDING' && '—'}
-          {(phase === 'VICTORY' || phase === 'GAMEOVER') && '—'}
+          {(phase === 'VICTORY' || phase === 'GAMEOVER' || phase === 'SOLUTION_REPLAY') && '—'}
         </div>
       </header>
 
       <main className="game-area" ref={boardRef}>
-        <div className="board-container">
-          <span className="board-label">🎯 Posición Objetivo</span>
-          <Board
-            board={targetBoard}
-            isInteractive={false}
-            selectedCell={null}
-            validMoves={[]}
-          />
-        </div>
-
-        <div className="board-container">
+        
+        {/* ── Tablero de Juego (Reverso) ── */}
+        <div className={`board-container play-container ${isInverted ? 'inverted-active' : ''}`}>
           <span className="board-label">
             {phase === 'OBSERVATION' ? '🔒 Observa' : '♟ Tu Tablero'}
           </span>
@@ -306,6 +501,84 @@ function App() {
             dragOverCell={dragOverCell}
           />
         </div>
+
+        {/* ── Barra de acciones de tarjeta ── */}
+        <div className="board-actions">
+          {/* Botón ¡Lo tengo! rápido */}
+          {phase === 'OBSERVATION' && (
+            <button
+              className="btn-action"
+              onClick={() => setPhase('BIDDING')}
+              style={{ color: '#10b981', borderColor: 'rgba(16, 185, 129, 0.4)' }}
+            >
+              ⚡ ¡Lo tengo!
+            </button>
+          )}
+
+          {/* Deshacer — solo si hay historial en EXECUTION */}
+          {phase === 'EXECUTION' && moveHistory.length > 0 && (
+            <button
+              className="btn-action"
+              onClick={handleUndo}
+              title="Deshacer último movimiento"
+            >
+              ↩️ Deshacer
+            </button>
+          )}
+
+          {/* Invertir — solo en EXECUTION (oculto por ahora, se hace auto en bid) */}
+
+          {/* Ver reverso (solo en fase inicial) */}
+          {phase !== 'EXECUTION' && (
+            <button
+              className={`btn-action ${isFlipped ? 'active' : ''}`}
+              onClick={handleToggleFlip}
+              title="Girar la tarjeta para ver la posición inicial"
+            >
+              🔄 {isFlipped ? 'Anverso' : 'Mirar reverso'}
+            </button>
+          )}
+
+          {/* Rotar carta (1 uso en Ejecución) */}
+          {phase === 'EXECUTION' && rotateUsesLeft > 0 && (
+            <button
+              className="btn-action"
+              onClick={handleRotate}
+              title="Rotar tarjeta 90º (1 solo uso)"
+            >
+              ↻ Rotar 90º (1 uso)
+            </button>
+          )}
+
+          {/* Rendirse y ver solución */}
+          {phase === 'EXECUTION' && (
+            <button
+              className="btn-action"
+              onClick={startSolutionReplay}
+              style={{ color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+              title="Rendirse y ver la animación de la solución"
+            >
+              🏳️ Ver Solución
+            </button>
+          )}
+        </div>
+
+        {/* ── Tablero Objetivo (Anverso) ── */}
+        <div className={`board-container target-container ${isInverted ? 'inverted-active' : ''}`}>
+          <span className="board-label">
+            {isInverted ? '🔄 Invertido — Objetivo' : '🎯 Posición Objetivo'}
+          </span>
+
+          <FlippableBoard
+            frontBoard={targetBoard}
+            backBoard={flipBackBoardEffective}
+            isFlipped={isFlipped}
+            isInteractive={false}
+            selectedCell={null}
+            validMoves={[]}
+          />
+        </div>
+
       </main>
 
       {/* Ghost pieza arrastrando */}
@@ -318,7 +591,6 @@ function App() {
         <div className="modal-overlay">
           <div className="modal-content">
             <h2>¿En cuántos movimientos?</h2>
-            <p className="modal-hint">El óptimo es {level?.optimalMoves} movimientos</p>
             <form onSubmit={handleBidSubmit}>
               <input
                 type="number"
@@ -341,16 +613,16 @@ function App() {
             {phase === 'VICTORY' ? (
               <h2 className="victory-text">¡Victoria! 🎉</h2>
             ) : (
-              <h2 className="defeat-text">Fin del juego 💀</h2>
+              <h2 className="defeat-text">Solución 🏳️</h2>
             )}
             <p className="modal-hint">
               {phase === 'VICTORY'
-                ? `Resuelto en ${currentMovesCount} movimiento${currentMovesCount !== 1 ? 's' : ''} (óptimo: ${level?.optimalMoves})`
-                : `Te has quedado sin movimientos. El óptimo era ${level?.optimalMoves}.`}
+                ? `Resolviste en ${currentMovesCount} movimiento${currentMovesCount !== 1 ? 's' : ''} (apuesta: ${bidMoves})`
+                : `Juego terminado. El óptimo era ${level?.optimalMoves}.`}
             </p>
             <div className="modal-buttons">
               <button onClick={() => loadLevel(currentLevel)}>Reintentar</button>
-              {currentLevel < generatedLevels.length - 1 && phase === 'VICTORY' && (
+              {currentLevel < shuffledLevels.length - 1 && phase === 'VICTORY' && (
                 <button className="btn-success" onClick={() => setCurrentLevel(l => l + 1)}>
                   Siguiente →
                 </button>

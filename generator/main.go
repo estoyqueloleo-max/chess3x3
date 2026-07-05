@@ -15,10 +15,11 @@ type ReactPiece struct {
 }
 
 type ReactLevel struct {
-	Id           int           `json:"id"`
-	StartBoard   []*ReactPiece `json:"startBoard"`
-	TargetBoard  []*ReactPiece `json:"targetBoard"`
-	OptimalMoves int           `json:"optimalMoves"`
+	Id           int             `json:"id"`
+	StartBoard   []*ReactPiece   `json:"startBoard"`
+	TargetBoard  []*ReactPiece   `json:"targetBoard"`
+	OptimalMoves int             `json:"optimalMoves"`
+	SolutionPath [][]*ReactPiece `json:"solutionPath"`
 }
 
 func PieceToReact(p Piece) *ReactPiece {
@@ -227,11 +228,31 @@ func main() {
 
 	levels := make([]ReactLevel, len(allPuzzles))
 	for i, p := range allPuzzles {
+		// Reconstruir el camino desde target hasta seed
+		var path []Board
+		curr := p.Target
+		for curr != p.Start {
+			path = append(path, curr)
+			curr = allStates[curr].Parent
+		}
+		path = append(path, p.Start)
+		
+		// Invertir el camino para que vaya de start a target
+		for j := 0; j < len(path)/2; j++ {
+			path[j], path[len(path)-1-j] = path[len(path)-1-j], path[j]
+		}
+		
+		reactPath := make([][]*ReactPiece, len(path))
+		for k, b := range path {
+			reactPath[k] = BoardToReact(b)
+		}
+
 		levels[i] = ReactLevel{
 			Id:           i + 1,
 			StartBoard:   BoardToReact(p.Start),
 			TargetBoard:  BoardToReact(p.Target),
 			OptimalMoves: p.OptimalMoves,
+			SolutionPath: reactPath,
 		}
 	}
 

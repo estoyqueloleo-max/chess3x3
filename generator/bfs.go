@@ -40,14 +40,15 @@ func GetNextStates(board Board) []Board {
 
 // StateInfo contiene toda la información que queremos saber de un estado alcanzado.
 type StateInfo struct {
-	Depth int
+	Depth  int
+	Parent Board
 }
 
 // ExploreAllStates hace un BFS completo desde `seed` y devuelve un mapa
 // de todos los estados alcanzables junto con su profundidad mínima desde seed.
 func ExploreAllStates(seed Board) map[Board]StateInfo {
 	result := make(map[Board]StateInfo)
-	result[seed] = StateInfo{Depth: 0}
+	result[seed] = StateInfo{Depth: 0, Parent: seed}
 
 	queue := []State{{Board: seed, Depth: 0}}
 
@@ -57,7 +58,7 @@ func ExploreAllStates(seed Board) map[Board]StateInfo {
 
 		for _, next := range GetNextStates(curr.Board) {
 			if _, seen := result[next]; !seen {
-				result[next] = StateInfo{Depth: curr.Depth + 1}
+				result[next] = StateInfo{Depth: curr.Depth + 1, Parent: curr.Board}
 				queue = append(queue, State{Board: next, Depth: curr.Depth + 1})
 			}
 		}

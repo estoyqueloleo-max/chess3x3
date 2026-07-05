@@ -6,22 +6,25 @@ Aplicación web **Mobile-First** de lógica espacial basada en ajedrez. Se juega
 
 ## 🎮 Mecánica del Juego
 
-El juego se desarrolla en **3 fases** por ronda:
+El juego se desarrolla en **3 fases** por ronda. Al cargar la app, se baraja el mazo de 100 tarjetas disponibles de forma aleatoria.
 
 ### Fase 1 — Observación
-- Se muestra la posición inicial (tablero inferior) y la posición objetivo (tarjeta superior).
+- Se muestra la posición inicial (Tu Tablero) y la posición objetivo (Tarjeta Objetivo).
 - El tablero interactivo está **bloqueado** — solo se puede pensar.
-- Un temporizador de 30 segundos cuenta hacia atrás.
+- **Temporizador Configurable:** Puedes elegir entre 30s, 60s o infinito (∞).
+- **Botón "¡Lo tengo!":** Puedes saltar la espera e ir directo a apostar si ya tienes la solución en mente.
+- **Mecánica de Tarjeta Física:** Puedes darle la vuelta a la tarjeta objetivo pulsando **"Mirar reverso"** para ver dónde empezaban las piezas.
 
 ### Fase 2 — Apuesta
-- Al terminar el tiempo (o al pulsar "¡Lo tengo!"), aparece un modal.
-- El jugador introduce cuántos movimientos cree que necesita para resolver el puzzle.
+- El jugador introduce cuántos movimientos cree que necesita para resolver el puzzle. El juego **ya no da pistas** sobre el número óptimo.
+- **Jugar Invertido:** Si aceptas la apuesta dejando la tarjeta *dada la vuelta* (viendo el reverso), el juego asumirá que quieres jugar hacia esa cara. Se te cobrará **+1 movimiento de penalización** y se intercambiarán el inicio y el objetivo.
 
 ### Fase 3 — Ejecución
 - El tablero se desbloquea. Las piezas se mueven por clic o arrastrado (drag-and-drop).
-- Un contador muestra los movimientos realizados vs. el límite apostado.
-- **Victoria:** La posición coincide con la tarjeta objetivo dentro del límite de movimientos.
-- **Derrota:** Se supera el límite sin alcanzar el objetivo.
+- Ya no hay "Game Over" estricto: puedes mover piezas indefinidamente hasta lograr el objetivo. Al ganar, se compararán tus movimientos con tu apuesta.
+- **Deshacer (Undo):** Si te equivocas, puedes pulsar "↩️ Deshacer" o simplemente **devolver físicamente** la pieza a su casilla anterior. El juego anulará la acción y te restará 1 movimiento.
+- **Rotar 90º:** Tienes **1 solo uso** por partida para rotar la tarjeta objetivo 90 grados en el sentido de las agujas del reloj, cambiando tu perspectiva del objetivo.
+- **Rendirse:** Si te atascas, el botón **"🏳️ Ver Solución"** reproduce una animación paso a paso mostrándote cómo resolverlo por el camino óptimo.
 
 ---
 
@@ -91,9 +94,6 @@ go run .
 ## 📋 Backlog de Mejoras
 
 ### Pendiente
-- [ ] **Temporizador configurable** — Selector en la cabecera para 30s / 60s / ∞.
-- [ ] **"Ver la Solución"** — Al perder, animar la solución óptima (requiere guardar el camino BFS en el JSON).
-- [ ] **Botón "¡Lo tengo!"** — Saltar el temporizador manualmente en la Fase de Observación.
 - [ ] **Tabla de puntuaciones** — Registro local de mejores marcas por nivel.
 - [ ] **Modo oscuro/claro** — Toggle de tema.
 - [ ] **Modo 2 jugadores local** — Turnos alternativos, cada uno apuesta sus movimientos.
