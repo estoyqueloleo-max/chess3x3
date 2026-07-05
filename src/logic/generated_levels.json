@@ -1,0 +1,5602 @@
+[
+  {
+    "id": 1,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 2,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 3,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null
+    ],
+    "optimalMoves": 12
+  },
+  {
+    "id": 4,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 5,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 6,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 7,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 4
+  },
+  {
+    "id": 8,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 9,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 10,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 11,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 12,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 13,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 14,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 15,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 16,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null
+    ],
+    "optimalMoves": 3
+  },
+  {
+    "id": 17,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 18,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 19,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 20,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 21,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 10
+  },
+  {
+    "id": 22,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 23,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 24,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 10
+  },
+  {
+    "id": 25,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 26,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 27,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 28,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 29,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 30,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 31,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      null
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 32,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 33,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 34,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 35,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      }
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 36,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 37,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 38,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 39,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 40,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 4
+  },
+  {
+    "id": 41,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 42,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 43,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 44,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 45,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 46,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 47,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 48,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 49,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 50,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 51,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null
+    ],
+    "optimalMoves": 10
+  },
+  {
+    "id": 52,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 53,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 54,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 55,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 56,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      }
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 57,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 58,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 5
+  },
+  {
+    "id": 59,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 60,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 61,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      null,
+      null
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 62,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 63,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 64,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 65,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 66,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 67,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 68,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null
+    ],
+    "optimalMoves": 11
+  },
+  {
+    "id": 69,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      }
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 70,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 71,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 72,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 73,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 74,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 75,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      }
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 76,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 77,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      null,
+      null
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 78,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 79,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 80,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null
+    ],
+    "optimalMoves": 9
+  },
+  {
+    "id": 81,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 82,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 83,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 84,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 85,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 86,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 87,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 88,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 89,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 90,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      }
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 91,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      }
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 92,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 93,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      null
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 94,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 95,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 96,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 97,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      }
+    ],
+    "optimalMoves": 8
+  },
+  {
+    "id": 98,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      }
+    ],
+    "optimalMoves": 6
+  },
+  {
+    "id": 99,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      null,
+      null,
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      null,
+      null,
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      }
+    ],
+    "optimalMoves": 7
+  },
+  {
+    "id": 100,
+    "startBoard": [
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      null
+    ],
+    "targetBoard": [
+      {
+        "type": "QUEEN",
+        "id": "q1"
+      },
+      {
+        "type": "KNIGHT",
+        "id": "n1"
+      },
+      null,
+      null,
+      {
+        "type": "ROOK",
+        "id": "r1"
+      },
+      {
+        "type": "BISHOP",
+        "id": "b1"
+      },
+      {
+        "type": "KING",
+        "id": "k1"
+      },
+      null,
+      null
+    ],
+    "optimalMoves": 8
+  }
+]
