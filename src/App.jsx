@@ -171,7 +171,7 @@ function App() {
   useEffect(() => {
     if (window.Go) {
       const go = new window.Go();
-      WebAssembly.instantiateStreaming(fetch('/chess_engine.wasm'), go.importObject)
+      WebAssembly.instantiateStreaming(fetch(`${import.meta.env.BASE_URL}chess_engine.wasm`), go.importObject)
         .then(result => {
           go.run(result.instance);
           setWasmReady(true);
