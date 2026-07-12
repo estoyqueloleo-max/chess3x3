@@ -137,6 +137,7 @@ function App() {
 
   const [selectedCell, setSelectedCell] = useState(null);
   const [validMoves, setValidMoves] = useState([]);
+  const [isError, setIsError] = useState(false);
 
   const [bidMoves, setBidMoves] = useState(0);
   const [currentMovesCount, setCurrentMovesCount] = useState(0);
@@ -245,6 +246,7 @@ function App() {
     setIsInverted(false);
     setIsFlipped(false);
     setRotateUsesLeft(1);
+    setIsError(false);
   }, [shuffledLevels, memorySetting, timerSetting, gameMode, lociDifficulty]);
 
   useEffect(() => { loadLevel(currentLevel); }, [currentLevel, loadLevel]);
@@ -536,12 +538,19 @@ function App() {
         });
         if (isMatch) {
           if (gameMode === 'loci') {
-            setPhase('VICTORY');
+            setPhase('LOCI_SUCCESS');
             setCurrentMovesCount(0);
+            setTimeout(() => {
+              // Hacky way to generate next random combo without needing external deps
+              loadLevel(currentLevel); 
+            }, 1200);
           } else {
             setPhase('OBSERVATION');
             setTimeRemaining(timerSetting);
           }
+        } else {
+          setIsError(true);
+          setTimeout(() => setIsError(false), 800);
         }
       }
     }
@@ -908,14 +917,15 @@ function App() {
         </div>
 
         {/* ── Tablero Objetivo (Anverso) ── */}
-        <div className={`board-container target-container ${isInverted ? 'inverted-active' : ''}`}>
-          <span className="board-label">
+        <div className={`board-container target-container ${isInverted ? 'inverted-active' : ''} ${isError ? 'error-shake' : ''}`}>
+          <span className="board-label" style={{ color: phase === 'LOCI_SUCCESS' ? '#10b981' : undefined }}>
             {phase === 'MEMORY_OBSERVATION' ? '🧠 Memoriza el Objetivo' :
              phase === 'MEMORY_RECONSTRUCTION' ? '🧩 Reconstruye el Objetivo' :
+             phase === 'LOCI_SUCCESS' ? '✨ ¡Correcto! Siguiente...' :
              isInverted ? '🔄 Invertido — Objetivo' : '🎯 Posición Objetivo'}
           </span>
 
-          {phase === 'MEMORY_RECONSTRUCTION' ? (
+          {phase === 'MEMORY_RECONSTRUCTION' || phase === 'LOCI_SUCCESS' ? (
             <>
               <Board
                 board={reconstructedBoard}

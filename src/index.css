@@ -477,3 +477,14 @@ body {
   0%, 100% { box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.4); }
   50%       { box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.7), 0 0 20px rgba(167, 139, 250, 0.3); }
 }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.board-container.error-shake .board {
+  animation: shake 0.3s ease-in-out;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.8), 0 0 15px rgba(239, 68, 68, 0.4) !important;
+}
