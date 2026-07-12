@@ -926,7 +926,7 @@ function App() {
                     onClick={() => setSelectedPaletteIdx(selectedPaletteIdx === i ? null : i)}
                     style={{ cursor: 'pointer', width: 'clamp(30px, 12vw, 55px)', aspectRatio: '1', border: '1px dashed #3b82f6', background: 'rgba(59, 130, 246, 0.1)' }}
                   >
-                    <span className="piece">{getPieceDisplay(piece, easterEggNumbers)}</span>
+                    <span className="piece">{getPieceDisplay(piece)}</span>
                   </div>
                 ))}
               </div>
