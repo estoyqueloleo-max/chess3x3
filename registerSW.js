@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/chess3x3/sw.js', { scope: '/chess3x3/' })})}
