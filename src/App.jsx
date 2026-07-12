@@ -21,7 +21,7 @@ const PIECE_SYMBOLS = {
   KNIGHT: '♞'
 };
 
-const LOCI_EMOJIS = ['🚗', '🍎', '🎸', '🐶', '⏰', '🚀', '🍔', '🎩', '☂️', '⚽', '🔑', '💎', '📚', '🌻', '🎁', '🎈', '📷', '💡'];
+const LOCI_EMOJIS = ['🚗','🍎','🎸','🐶','⏰','🚀','🍔','🎩','☂️','⚽','🔑','💎','📚','🌻','🎁','🎈','📷','💡','🐘','🦋','🚲','🍕','🎲','🎹','🍩','🏆','🧩','🧸','🧶','🥑','🍉','🍍','🍒','🍓','🥕','🌽','🍞','🥞','🍟','🌮','🍣','🍦','🍪','🍫','☕','🍷','🍹','🍺','🏀','🏈','⚾','🎾','🏐','🎱','🏓','🏸','🥊','🥋','🎿','🏂','🏋️','🤺','🧘','🏄','🏊','🚣','🚁','🛶','⛵','🚤','🛳️','⛴️','🛥️','🚢','✈️','🛫','🛬','🪂','💺','🚟','🚠','🚡','🛰️','🪐','🌙','⭐','🌟','🌠','🌌','☁️','⛅','⛈️','🌤️','🌥️','🌦️','🌧️','🌨️','🌩️','🌪️','🌫️','🌬️'];
 
 const getPieceDisplay = (piece) => {
   if (!piece) return '';
@@ -747,9 +747,10 @@ function App() {
                 style={{ background: 'transparent', color: '#8b5cf6', border: 'none', outline: 'none', cursor: 'pointer' }}
                 title="Cantidad de objetos a memorizar"
               >
-                <option value="3">3 Objs</option>
                 <option value="5">5 Objs</option>
+                <option value="6">6 Objs</option>
                 <option value="7">7 Objs</option>
+                <option value="8">8 Objs</option>
                 <option value="9">9 Objs</option>
               </select>
               <select 
