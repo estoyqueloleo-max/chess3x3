@@ -21,6 +21,14 @@ const PIECE_SYMBOLS = {
   KNIGHT: '♞'
 };
 
+const LOCI_EMOJIS = ['🚗', '🍎', '🎸', '🐶', '⏰', '🚀', '🍔', '🎩', '☂️', '⚽', '🔑', '💎', '📚', '🌻', '🎁', '🎈', '📷', '💡'];
+
+const getPieceDisplay = (piece) => {
+  if (!piece) return '';
+  if (piece.type === 'LOCI') return piece.emoji;
+  return PIECE_SYMBOLS[piece.type] || '?';
+};
+
 // ── Board Component ──────────────────────────────────────────────────────────
 const Board = ({
   board,
@@ -33,6 +41,7 @@ const Board = ({
   onDragStart,
   onDragEnter,
   dragOverCell,
+  useNumbers,
 }) => {
   return (
     <div className={`board ${isInteractive ? 'interactive' : 'locked'}`}>
@@ -62,7 +71,7 @@ const Board = ({
                   onDragStart && onDragStart(e, index);
                 }}
               >
-                {PIECE_SYMBOLS[piece.type]}
+                {getPieceDisplay(piece)}
               </span>
             )}
           </div>
@@ -94,7 +103,7 @@ const DragGhost = ({ piece, pos }) => {
       className="drag-ghost"
       style={{ left: pos.x, top: pos.y }}
     >
-      {PIECE_SYMBOLS[piece.type]}
+      {getPieceDisplay(piece)}
     </div>
   );
 };
@@ -134,7 +143,6 @@ function App() {
   const [bidInput, setBidInput] = useState('');
   const [moveHistory, setMoveHistory] = useState([]);
   const [rotateUsesLeft, setRotateUsesLeft] = useState(1);
-  const [timerSetting, setTimerSetting] = useState(30); // 30, 60, Infinity
   const [replayStep, setReplayStep] = useState(0);
 
   // ── Drag state ─────────────────────────────────────────────────────────────
@@ -145,13 +153,75 @@ function App() {
   const isDragging = useRef(false);
   const dragStartPos = useRef(null);
 
+  // ── Persistent Settings ────────────────────────────────────────────────────
+  const [settings, setSettings] = useState(() => {
+    try {
+      const saved = localStorage.getItem('chess3x3_settings');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return {
+      timerSetting: 30,
+      memorySetting: 0,
+      gameMode: 'chess', // 'chess' | 'loci'
+      lociDifficulty: 5, // 3, 5, 9
+    };
+  });
+
+  const updateSetting = useCallback((key, value) => {
+    setSettings(prev => {
+      const updated = { ...prev, [key]: typeof value === 'function' ? value(prev[key]) : value };
+      localStorage.setItem('chess3x3_settings', JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
+  const timerSetting = settings.timerSetting;
+  const setTimerSetting = useCallback((val) => updateSetting('timerSetting', val), [updateSetting]);
+  const memorySetting = settings.memorySetting;
+  const setMemorySetting = useCallback((val) => updateSetting('memorySetting', val), [updateSetting]);
+  const gameMode = settings.gameMode;
+  const setGameMode = useCallback((val) => updateSetting('gameMode', val), [updateSetting]);
+  const lociDifficulty = settings.lociDifficulty;
+  const setLociDifficulty = useCallback((val) => updateSetting('lociDifficulty', val), [updateSetting]);
+
+  // ── Memory Mode State ──────────────────────────────────────────────────────
+  const [reconstructedBoard, setReconstructedBoard] = useState(Array(9).fill(null));
+  const [memoryPalette, setMemoryPalette] = useState([]);
+  const [selectedPaletteIdx, setSelectedPaletteIdx] = useState(null);
+
   // ── Level loading ──────────────────────────────────────────────────────────
   const loadLevel = useCallback((levelIndex) => {
-    const level = shuffledLevels[levelIndex];
-    setTargetBoard(level.targetBoard);
-    setCurrentBoard(level.startBoard);
-    setPhase('OBSERVATION');
-    setTimeRemaining(timerSetting);
+    let currentLociMode = gameMode === 'loci';
+    let targetB = Array(9).fill(null);
+    let startB = Array(9).fill(null);
+
+    if (currentLociMode) {
+      const items = [...LOCI_EMOJIS].sort(() => Math.random() - 0.5).slice(0, lociDifficulty);
+      const positions = [0,1,2,3,4,5,6,7,8].sort(() => Math.random() - 0.5).slice(0, lociDifficulty);
+      positions.forEach((pos, i) => {
+        targetB[pos] = { type: 'LOCI', id: `loci_${i}`, emoji: items[i] };
+      });
+    } else {
+      const level = shuffledLevels[levelIndex];
+      targetB = level.targetBoard;
+      startB = level.startBoard;
+    }
+
+    setTargetBoard(targetB);
+    setCurrentBoard(startB);
+    
+    if (currentLociMode || memorySetting > 0) {
+      setPhase('MEMORY_OBSERVATION');
+      setTimeRemaining(memorySetting > 0 ? memorySetting : Infinity);
+      setReconstructedBoard(Array(9).fill(null));
+      const pieces = targetB.filter(p => p !== null);
+      setMemoryPalette([...pieces].sort(() => Math.random() - 0.5));
+      setSelectedPaletteIdx(null);
+    } else {
+      setPhase('OBSERVATION');
+      setTimeRemaining(timerSetting);
+    }
+
     setBidMoves(0);
     setCurrentMovesCount(0);
     setMoveHistory([]);
@@ -163,9 +233,9 @@ function App() {
     setIsInverted(false);
     setIsFlipped(false);
     setRotateUsesLeft(1);
-  }, []);
+  }, [shuffledLevels, memorySetting, timerSetting, gameMode, lociDifficulty]);
 
-  useEffect(() => { loadLevel(currentLevel); }, [currentLevel, loadLevel, shuffledLevels]);
+  useEffect(() => { loadLevel(currentLevel); }, [currentLevel, loadLevel]);
 
   // ── WASM Initialization ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -202,10 +272,14 @@ function App() {
   // ── Timer ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     let timer;
-    if (phase === 'OBSERVATION' && timeRemaining > 0 && timeRemaining !== Infinity) {
+    if (timeRemaining > 0 && timeRemaining !== Infinity && (phase === 'OBSERVATION' || phase === 'MEMORY_OBSERVATION')) {
       timer = setTimeout(() => setTimeRemaining(t => t - 1), 1000);
-    } else if (phase === 'OBSERVATION' && timeRemaining === 0) {
-      setPhase('BIDDING');
+    } else if (timeRemaining === 0) {
+      if (phase === 'MEMORY_OBSERVATION') {
+        setPhase('MEMORY_RECONSTRUCTION');
+      } else if (phase === 'OBSERVATION') {
+        setPhase('BIDDING');
+      }
     }
     return () => clearTimeout(timer);
   }, [phase, timeRemaining]);
@@ -346,9 +420,25 @@ function App() {
     setValidMoves([]);
   }, [phase, moveHistory, currentMovesCount]);
 
-  // ── Mecánica: REPLAY SOLUCIÓN (WASM) ───────────────────────────────────────
+  // ── Mecánica: REPLAY SOLUCIÓN Y REVISIÓN DE JUGADAS (WASM) ───────────────
   const [dynamicPath, setDynamicPath] = useState(null);
   const [replayPaused, setReplayPaused] = useState(false);
+  const [reviewAnalysis, setReviewAnalysis] = useState([]);
+
+  const startMoveReview = useCallback(() => {
+    if (!wasmReady || !window.getOptimalPathWasm) return;
+    
+    const fullHistory = [...moveHistory, currentBoard];
+    const analysis = fullHistory.map((state) => {
+      const path = window.getOptimalPathWasm(state, targetBoard);
+      return { state, optimalMoves: path ? path.length - 1 : Infinity };
+    });
+    
+    setReviewAnalysis(analysis);
+    setPhase('REVIEW_MOVES');
+    setReplayStep(0);
+    setCurrentBoard(fullHistory[0]);
+  }, [wasmReady, moveHistory, currentBoard, targetBoard]);
 
   const startSolutionReplay = useCallback(() => {
     if (!wasmReady || !window.getOptimalPathWasm) return;
@@ -407,6 +497,48 @@ function App() {
       }
     }
   }, [phase, selectedCell, currentBoard, validMoves, executeMove]);
+
+  // ── Memory Reconstruction Handler ──────────────────────────────────────────
+  const handleReconstructCellClick = useCallback((index) => {
+    if (phase !== 'MEMORY_RECONSTRUCTION') return;
+
+    if (reconstructedBoard[index]) {
+      const piece = reconstructedBoard[index];
+      setMemoryPalette(prev => [...prev, piece]);
+      const newBoard = [...reconstructedBoard];
+      newBoard[index] = null;
+      setReconstructedBoard(newBoard);
+      setSelectedPaletteIdx(null);
+    } else if (selectedPaletteIdx !== null) {
+      const piece = memoryPalette[selectedPaletteIdx];
+      const newBoard = [...reconstructedBoard];
+      newBoard[index] = piece;
+      setReconstructedBoard(newBoard);
+      
+      const newPalette = [...memoryPalette];
+      newPalette.splice(selectedPaletteIdx, 1);
+      setMemoryPalette(newPalette);
+      setSelectedPaletteIdx(null);
+      
+      if (newPalette.length === 0) {
+        const isMatch = newBoard.every((p, i) => {
+          const tp = targetBoard[i];
+          if (p === null && tp === null) return true;
+          if (p !== null && tp !== null) return p.id === tp.id;
+          return false;
+        });
+        if (isMatch) {
+          if (gameMode === 'loci') {
+            setPhase('VICTORY');
+            setCurrentMovesCount(0);
+          } else {
+            setPhase('OBSERVATION');
+            setTimeRemaining(timerSetting);
+          }
+        }
+      }
+    }
+  }, [phase, reconstructedBoard, selectedPaletteIdx, memoryPalette, targetBoard, timerSetting, gameMode]);
 
   // ── Drag handlers (Pointer Events API) ────────────────────────────────────
   const handleDragStart = useCallback((e, fromIdx) => {
@@ -513,34 +645,103 @@ function App() {
   return (
     <>
       <header className="header">
-        <div className="header-title">Chess 3×3</div>
-        <div className="header-meta">
-          Nivel {currentLevel + 1}
-          <span style={{ marginLeft: '8px', color: currentBest !== undefined ? '#f59e0b' : '#475569', fontSize: '0.78rem' }}>
-            🏆 {currentBest !== undefined ? currentBest : '--'}
-          </span>
-          <select 
-            value={timerSetting === Infinity ? 'inf' : timerSetting} 
-            onChange={(e) => {
-              const val = e.target.value === 'inf' ? Infinity : parseInt(e.target.value, 10);
-              setTimerSetting(val);
-            }}
-            className="timer-select"
-            style={{ marginLeft: '10px', background: 'transparent', color: '#94a3b8', border: 'none', outline: 'none', cursor: 'pointer' }}
-          >
-            <option value="30">30s</option>
-            <option value="60">60s</option>
-            <option value="inf">∞</option>
-          </select>
-          <label style={{ marginLeft: '10px', display: 'inline-flex', alignItems: 'center', cursor: 'pointer', color: '#94a3b8', fontSize: '0.8rem' }}>
-            <input 
-              type="checkbox" 
-              checked={isShuffled}
-              onChange={handleShuffleChange}
-              style={{ marginRight: '4px' }}
-            />
-            Barajar
-          </label>
+        <div 
+          className="header-title"
+          onClick={() => setGameMode(m => m === 'chess' ? 'loci' : 'chess')}
+          style={{ cursor: 'pointer', userSelect: 'none', position: 'relative', width: '130px', perspective: '600px' }}
+          title="Haz clic para cambiar de modo"
+        >
+          <div style={{ 
+            transition: 'transform 0.5s', 
+            transformStyle: 'preserve-3d',
+            transform: gameMode === 'loci' ? 'rotateX(180deg)' : 'rotateX(0deg)',
+            position: 'relative'
+          }}>
+            <div style={{ backfaceVisibility: 'hidden' }}>
+              Chess 3×3
+            </div>
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', backfaceVisibility: 'hidden', transform: 'rotateX(180deg)', color: '#8b5cf6' }}>
+              Loci Trainer
+            </div>
+          </div>
+        </div>
+        <div className="header-meta" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+
+          {gameMode === 'chess' && (
+            <>
+              <span>
+                Nivel {currentLevel + 1}
+                <span style={{ marginLeft: '8px', color: currentBest !== undefined ? '#f59e0b' : '#475569', fontSize: '0.78rem' }}>
+                  🏆 {currentBest !== undefined ? currentBest : '--'}
+                </span>
+              </span>
+              <select 
+                value={timerSetting === Infinity ? 'inf' : timerSetting} 
+                onChange={(e) => {
+                  const val = e.target.value === 'inf' ? Infinity : parseInt(e.target.value, 10);
+                  setTimerSetting(val);
+                }}
+                className="timer-select"
+                style={{ background: 'transparent', color: '#94a3b8', border: 'none', outline: 'none', cursor: 'pointer' }}
+              >
+                <option value="30">30s</option>
+                <option value="60">60s</option>
+                <option value="inf">∞</option>
+              </select>
+              <select 
+                value={memorySetting} 
+                onChange={(e) => setMemorySetting(parseInt(e.target.value, 10))}
+                className="timer-select"
+                style={{ background: 'transparent', color: '#10b981', border: 'none', outline: 'none', cursor: 'pointer' }}
+                title="Modo Memoria"
+              >
+                <option value="0">Mem: Off</option>
+                <option value="1">Mem: 1s</option>
+                <option value="2">Mem: 2s</option>
+                <option value="3">Mem: 3s</option>
+              </select>
+              <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', color: '#94a3b8', fontSize: '0.8rem' }}>
+                <input 
+                  type="checkbox" 
+                  checked={isShuffled}
+                  onChange={handleShuffleChange}
+                  style={{ marginRight: '4px' }}
+                />
+                Barajar
+              </label>
+            </>
+          )}
+
+          {gameMode === 'loci' && (
+            <>
+              <select 
+                value={lociDifficulty} 
+                onChange={(e) => setLociDifficulty(parseInt(e.target.value, 10))}
+                className="timer-select"
+                style={{ background: 'transparent', color: '#8b5cf6', border: 'none', outline: 'none', cursor: 'pointer' }}
+                title="Cantidad de objetos a memorizar"
+              >
+                <option value="3">3 Objs</option>
+                <option value="5">5 Objs</option>
+                <option value="7">7 Objs</option>
+                <option value="9">9 Objs</option>
+              </select>
+              <select 
+                value={memorySetting} 
+                onChange={(e) => setMemorySetting(parseInt(e.target.value, 10))}
+                className="timer-select"
+                style={{ background: 'transparent', color: '#10b981', border: 'none', outline: 'none', cursor: 'pointer' }}
+                title="Tiempo para observar"
+              >
+                <option value="0">Tiempo: ∞</option>
+                <option value="1">Tiempo: 1s</option>
+                <option value="2">Tiempo: 2s</option>
+                <option value="3">Tiempo: 3s</option>
+                <option value="5">Tiempo: 5s</option>
+                <option value="10">Tiempo: 10s</option>
+              </select>
+            </>
+          )}
         </div>
         <button
           onClick={() => setShowStats(true)}
@@ -548,21 +749,25 @@ function App() {
           title="Ver estadísticas"
         >🏆</button>
         <div className="header-timer">
-          {phase === 'OBSERVATION' && timeRemaining === Infinity && `∞`}
-          {phase === 'OBSERVATION' && timeRemaining !== Infinity && `${timeRemaining.toString().padStart(2, '0')}s`}
+          {(phase === 'OBSERVATION' || phase === 'MEMORY_OBSERVATION') && timeRemaining === Infinity && `∞`}
+          {(phase === 'OBSERVATION' || phase === 'MEMORY_OBSERVATION') && timeRemaining !== Infinity && `${timeRemaining.toString().padStart(2, '0')}s`}
+          {phase === 'MEMORY_RECONSTRUCTION' && '🧩'}
           {phase === 'EXECUTION' && `${currentMovesCount} / ${bidMoves}`}
           {phase === 'BIDDING' && '—'}
-          {(phase === 'VICTORY' || phase === 'GAMEOVER' || phase === 'SOLUTION_REPLAY') && '—'}
+          {(phase === 'VICTORY' || phase === 'GAMEOVER' || phase === 'SOLUTION_REPLAY' || phase === 'REVIEW_MOVES') && '—'}
         </div>
       </header>
 
       <main className="game-area" ref={boardRef}>
         
         {/* ── Tablero de Juego (Reverso) ── */}
-        <div className={`board-container play-container ${isInverted ? 'inverted-active' : ''}`}>
+        {gameMode !== 'loci' && (
+          <div className={`board-container play-container ${isInverted ? 'inverted-active' : ''}`}>
           <span className="board-label">
             {phase === 'SOLUTION_REPLAY'
               ? `▶ Paso ${Math.min(replayStep, dynamicPath ? dynamicPath.length - 1 : 0) + 1} / ${dynamicPath?.length ?? '?'}`
+              : phase === 'REVIEW_MOVES'
+              ? `🔍 Revisión: Mov ${replayStep} / ${Math.max(0, reviewAnalysis.length - 1)}`
               : phase === 'OBSERVATION' ? '🔒 Observa' : '♟ Tu Tablero'}
           </span>
           <Board
@@ -575,43 +780,64 @@ function App() {
             onDragStart={handleDragStart}
             onDragEnter={handleDragEnter}
             dragOverCell={dragOverCell}
+           
           />
 
-          {/* ── Slider de Timeline (solo en SOLUTION_REPLAY) ── */}
-          {phase === 'SOLUTION_REPLAY' && dynamicPath && (
-            <div style={{ width: '100%', padding: '6px 0 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <button
-                onClick={() => setReplayPaused(p => !p)}
-                style={{
-                  flexShrink: 0,
-                  background: 'rgba(30,41,59,0.8)',
-                  border: '1px solid #334155',
-                  borderRadius: '6px',
-                  color: '#f1f5f9',
-                  padding: '4px 10px',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem',
-                }}
-              >
-                {replayPaused ? '▶' : '⏸'}
-              </button>
-              <input
-                type="range"
-                min={0}
-                max={dynamicPath.length - 1}
-                value={Math.min(replayStep, dynamicPath.length - 1)}
-                onMouseDown={() => setReplayPaused(true)}
-                onTouchStart={() => setReplayPaused(true)}
-                onChange={(e) => {
-                  const step = parseInt(e.target.value, 10);
-                  setReplayStep(step);
-                  setCurrentBoard(dynamicPath[step].map(p => p));
-                }}
-                style={{ flex: 1, accentColor: '#3b82f6' }}
-              />
+          {/* ── Slider de Timeline (solo en SOLUTION_REPLAY o REVIEW_MOVES) ── */}
+          {(phase === 'SOLUTION_REPLAY' && dynamicPath) || (phase === 'REVIEW_MOVES' && reviewAnalysis.length > 0) ? (
+            <div style={{ width: '100%', padding: '6px 0 0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {phase === 'SOLUTION_REPLAY' && (
+                  <button
+                    onClick={() => setReplayPaused(p => !p)}
+                    style={{
+                      flexShrink: 0,
+                      background: 'rgba(30,41,59,0.8)',
+                      border: '1px solid #334155',
+                      borderRadius: '6px',
+                      color: '#f1f5f9',
+                      padding: '4px 10px',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem',
+                    }}
+                  >
+                    {replayPaused ? '▶' : '⏸'}
+                  </button>
+                )}
+                <input
+                  type="range"
+                  min={0}
+                  max={phase === 'SOLUTION_REPLAY' ? dynamicPath.length - 1 : reviewAnalysis.length - 1}
+                  value={Math.min(replayStep, phase === 'SOLUTION_REPLAY' ? dynamicPath.length - 1 : reviewAnalysis.length - 1)}
+                  onMouseDown={() => phase === 'SOLUTION_REPLAY' && setReplayPaused(true)}
+                  onTouchStart={() => phase === 'SOLUTION_REPLAY' && setReplayPaused(true)}
+                  onChange={(e) => {
+                    const step = parseInt(e.target.value, 10);
+                    setReplayStep(step);
+                    if (phase === 'SOLUTION_REPLAY') setCurrentBoard(dynamicPath[step].map(p => p));
+                    else if (phase === 'REVIEW_MOVES') setCurrentBoard(reviewAnalysis[step].state.map(p => p));
+                  }}
+                  style={{ flex: 1, accentColor: phase === 'REVIEW_MOVES' ? '#8b5cf6' : '#3b82f6' }}
+                />
+              </div>
+              {phase === 'REVIEW_MOVES' && (
+                <div style={{ textAlign: 'center', fontSize: '0.85rem', color: '#e2e8f0', background: 'rgba(30,41,59,0.6)', padding: '4px', borderRadius: '4px' }}>
+                  Distancia al objetivo: <strong>{reviewAnalysis[replayStep]?.optimalMoves}</strong>
+                  {replayStep > 0 && (
+                    <span style={{ marginLeft: '10px' }}>
+                      {reviewAnalysis[replayStep].optimalMoves < reviewAnalysis[replayStep - 1].optimalMoves 
+                        ? <span style={{ color: '#10b981' }}>✅ Buen movimiento</span>
+                        : reviewAnalysis[replayStep].optimalMoves === reviewAnalysis[replayStep - 1].optimalMoves
+                          ? <span style={{ color: '#f59e0b' }}>⚠️ Imprecisión</span>
+                          : <span style={{ color: '#ef4444' }}>❌ Error</span>}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
-          )}
+          ) : null}
         </div>
+        )}
 
         {/* ── Barra de acciones de tarjeta ── */}
         <div className="board-actions">
@@ -640,7 +866,7 @@ function App() {
           {/* Invertir — solo en EXECUTION (oculto por ahora, se hace auto en bid) */}
 
           {/* Ver reverso (solo en fase inicial) */}
-          {phase !== 'EXECUTION' && (
+          {(phase === 'OBSERVATION' || phase === 'BIDDING') && (
             <button
               className={`btn-action ${isFlipped ? 'active' : ''}`}
               onClick={handleToggleFlip}
@@ -677,17 +903,45 @@ function App() {
         {/* ── Tablero Objetivo (Anverso) ── */}
         <div className={`board-container target-container ${isInverted ? 'inverted-active' : ''}`}>
           <span className="board-label">
-            {isInverted ? '🔄 Invertido — Objetivo' : '🎯 Posición Objetivo'}
+            {phase === 'MEMORY_OBSERVATION' ? '🧠 Memoriza el Objetivo' :
+             phase === 'MEMORY_RECONSTRUCTION' ? '🧩 Reconstruye el Objetivo' :
+             isInverted ? '🔄 Invertido — Objetivo' : '🎯 Posición Objetivo'}
           </span>
 
-          <FlippableBoard
-            frontBoard={targetBoard}
-            backBoard={flipBackBoardEffective}
-            isFlipped={isFlipped}
-            isInteractive={false}
-            selectedCell={null}
-            validMoves={[]}
-          />
+          {phase === 'MEMORY_RECONSTRUCTION' ? (
+            <>
+              <Board
+                board={reconstructedBoard}
+                isInteractive={true}
+                selectedCell={null}
+                validMoves={[]}
+                onCellClick={handleReconstructCellClick}
+               
+              />
+              <div className="memory-palette" style={{ display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                {memoryPalette.map((piece, i) => (
+                  <div 
+                    key={i}
+                    className={`cell ${selectedPaletteIdx === i ? 'selected' : ''}`}
+                    onClick={() => setSelectedPaletteIdx(selectedPaletteIdx === i ? null : i)}
+                    style={{ cursor: 'pointer', width: 'clamp(30px, 12vw, 55px)', aspectRatio: '1', border: '1px dashed #3b82f6', background: 'rgba(59, 130, 246, 0.1)' }}
+                  >
+                    <span className="piece">{getPieceDisplay(piece, easterEggNumbers)}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <FlippableBoard
+              frontBoard={phase === 'MEMORY_OBSERVATION' ? targetBoard : targetBoard}
+              backBoard={flipBackBoardEffective}
+              isFlipped={isFlipped}
+              isInteractive={false}
+              selectedCell={null}
+              validMoves={[]}
+             
+            />
+          )}
         </div>
 
       </main>
@@ -732,8 +986,10 @@ function App() {
               </div>
             )}
             <p className="modal-hint">
-              {phase === 'VICTORY'
+              {phase === 'VICTORY' && gameMode === 'chess'
                 ? `Resolviste en ${currentMovesCount} movimiento${currentMovesCount !== 1 ? 's' : ''} (apuesta: ${bidMoves})`
+                : phase === 'VICTORY' && gameMode === 'loci'
+                ? `¡Memorizaste ${lociDifficulty} objetos a la perfección!`
                 : `Juego terminado. El óptimo era ${level?.optimalMoves}.`}
             </p>
             <div className="modal-buttons">
@@ -742,7 +998,14 @@ function App() {
               {/* Botón Analizar si ganó pero fue subóptimo */}
               {phase === 'VICTORY' && currentMovesCount > level?.optimalMoves && wasmReady && (
                 <button className="btn-action" onClick={startSolutionReplay} style={{ color: '#3b82f6', borderColor: 'rgba(59, 130, 246, 0.4)' }}>
-                  🧠 Analizar óptimo
+                  🧠 Solución óptima
+                </button>
+              )}
+
+              {/* Botón Revisar jugadas */}
+              {(phase === 'VICTORY' || phase === 'GAMEOVER') && moveHistory.length > 0 && wasmReady && (
+                <button className="btn-action" onClick={startMoveReview} style={{ color: '#8b5cf6', borderColor: 'rgba(139, 92, 246, 0.4)', marginLeft: '8px' }}>
+                  🔍 Mis Jugadas
                 </button>
               )}
 

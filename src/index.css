@@ -19,7 +19,6 @@
   padding: 0;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: none; /* importante para Pointer Events en móvil */
 }
 
 body {
@@ -184,6 +183,7 @@ body {
  *   + 2 tableros = 100dvh → cada tablero ≈ (100dvh - 136px) / 2
  */
 .board {
+  touch-action: none;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
@@ -197,6 +197,7 @@ body {
 
 /* ── TABLERO DE JUEGO (interactivo) — azul oscuro ─────────────────────── */
 .board-container.play-container .board {
+  touch-action: none;
   background: rgba(15, 30, 55, 0.85);
   box-shadow:
     inset 0 4px 16px rgba(0, 0, 0, 0.5),
@@ -206,6 +207,7 @@ body {
 
 /* ── TARJETA OBJETIVO — estilo “tarjeta física”, dorado/ámbar ────────────── */
 .board-container.target-container .board {
+  touch-action: none;
   background: rgba(40, 30, 10, 0.85);
   box-shadow:
     inset 0 4px 16px rgba(0, 0, 0, 0.4),
@@ -258,6 +260,7 @@ body {
 }
 
 .board-flip-back .board {
+  touch-action: none;
   opacity: 0.65;
   box-shadow:
     inset 0 4px 12px rgba(0, 0, 0, 0.4),
@@ -452,6 +455,7 @@ body {
 
 /* ── Inverted board glow ──────────────────────────────────────────────────── */
 .board-container.inverted-active .board {
+  touch-action: none;
   box-shadow:
     inset 0 4px 12px rgba(0, 0, 0, 0.4),
     0 0 0 2px rgba(167, 139, 250, 0.5),
