@@ -556,6 +556,16 @@ function App() {
     }
   }, [phase, reconstructedBoard, selectedPaletteIdx, memoryPalette, targetBoard, timerSetting, gameMode]);
 
+  const handleResetLoci = useCallback(() => {
+    setPhase('MEMORY_OBSERVATION');
+    setTimeRemaining(memorySetting > 0 ? memorySetting : Infinity);
+    setReconstructedBoard(Array(9).fill(null));
+    const pieces = targetBoard.filter(p => p !== null);
+    setMemoryPalette([...pieces].sort(() => Math.random() - 0.5));
+    setSelectedPaletteIdx(null);
+    setIsError(false);
+  }, [memorySetting, targetBoard]);
+
   // ── Drag handlers (Pointer Events API) ────────────────────────────────────
   const handleDragStart = useCallback((e, fromIdx) => {
     if (phase !== 'EXECUTION') return;
@@ -917,7 +927,10 @@ function App() {
         </div>
 
         {/* ── Tablero Objetivo (Anverso) ── */}
-        <div className={`board-container target-container ${isInverted ? 'inverted-active' : ''} ${isError ? 'error-shake' : ''}`}>
+        <div 
+          className={`board-container target-container ${isInverted ? 'inverted-active' : ''} ${isError ? 'error-shake' : ''}`}
+          style={{ marginTop: gameMode === 'loci' ? '4vh' : '0' }}
+        >
           <span className="board-label" style={{ color: phase === 'LOCI_SUCCESS' ? '#10b981' : undefined }}>
             {phase === 'MEMORY_OBSERVATION' ? '🧠 Memoriza el Objetivo' :
              phase === 'MEMORY_RECONSTRUCTION' ? '🧩 Reconstruye el Objetivo' :
@@ -947,6 +960,18 @@ function App() {
                   </div>
                 ))}
               </div>
+              
+              {gameMode === 'loci' && (
+                <div className="board-actions" style={{ marginTop: '20px' }}>
+                  <button 
+                    className="btn-action" 
+                    onClick={handleResetLoci}
+                    title="Volver a intentar memorizar esta misma combinación"
+                  >
+                    🔄 Reintentar
+                  </button>
+                </div>
+              )}
             </>
           ) : (
             <FlippableBoard
