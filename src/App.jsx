@@ -159,6 +159,7 @@ function App() {
     const defaults = {
       timerSetting: 30,
       memorySetting: 0,
+      lociMemorySetting: 0,
       gameMode: 'chess', // 'chess' | 'loci'
       lociDifficulty: 5, // 3, 5, 9
     };
@@ -171,6 +172,7 @@ function App() {
           ...parsed,
           timerSetting: parsed.timerSetting === 'inf' || parsed.timerSetting === null ? Infinity : Number(parsed.timerSetting ?? defaults.timerSetting),
           memorySetting: Number(parsed.memorySetting ?? defaults.memorySetting),
+          lociMemorySetting: Number(parsed.lociMemorySetting ?? defaults.lociMemorySetting),
           lociDifficulty: Number(parsed.lociDifficulty ?? defaults.lociDifficulty)
         };
       }
@@ -192,6 +194,8 @@ function App() {
   const setTimerSetting = useCallback((val) => updateSetting('timerSetting', val), [updateSetting]);
   const memorySetting = settings.memorySetting;
   const setMemorySetting = useCallback((val) => updateSetting('memorySetting', val), [updateSetting]);
+  const lociMemorySetting = settings.lociMemorySetting;
+  const setLociMemorySetting = useCallback((val) => updateSetting('lociMemorySetting', val), [updateSetting]);
   const gameMode = settings.gameMode;
   const setGameMode = useCallback((val) => updateSetting('gameMode', val), [updateSetting]);
   const lociDifficulty = settings.lociDifficulty;
@@ -223,9 +227,10 @@ function App() {
     setTargetBoard(targetB);
     setCurrentBoard(startB);
     
-    if (currentLociMode || memorySetting > 0) {
+    const activeMemorySetting = currentLociMode ? lociMemorySetting : memorySetting;
+    if (currentLociMode || activeMemorySetting > 0) {
       setPhase('MEMORY_OBSERVATION');
-      setTimeRemaining(memorySetting > 0 ? memorySetting : Infinity);
+      setTimeRemaining(activeMemorySetting > 0 ? activeMemorySetting : Infinity);
       setReconstructedBoard(Array(9).fill(null));
       const pieces = targetB.filter(p => p !== null);
       setMemoryPalette([...pieces].sort(() => Math.random() - 0.5));
@@ -247,7 +252,7 @@ function App() {
     setIsFlipped(false);
     setRotateUsesLeft(1);
     setIsError(false);
-  }, [shuffledLevels, memorySetting, timerSetting, gameMode, lociDifficulty]);
+  }, [shuffledLevels, memorySetting, lociMemorySetting, timerSetting, gameMode, lociDifficulty]);
 
   useEffect(() => { loadLevel(currentLevel); }, [currentLevel, loadLevel]);
 
@@ -558,13 +563,13 @@ function App() {
 
   const handleResetLoci = useCallback(() => {
     setPhase('MEMORY_OBSERVATION');
-    setTimeRemaining(memorySetting > 0 ? memorySetting : Infinity);
+    setTimeRemaining(lociMemorySetting > 0 ? lociMemorySetting : Infinity);
     setReconstructedBoard(Array(9).fill(null));
     const pieces = targetBoard.filter(p => p !== null);
     setMemoryPalette([...pieces].sort(() => Math.random() - 0.5));
     setSelectedPaletteIdx(null);
     setIsError(false);
-  }, [memorySetting, targetBoard]);
+  }, [lociMemorySetting, targetBoard]);
 
   // ── Drag handlers (Pointer Events API) ────────────────────────────────────
   const handleDragStart = useCallback((e, fromIdx) => {
@@ -754,8 +759,8 @@ function App() {
                 <option value="9">9 Objs</option>
               </select>
               <select 
-                value={memorySetting} 
-                onChange={(e) => setMemorySetting(parseInt(e.target.value, 10))}
+                value={lociMemorySetting} 
+                onChange={(e) => setLociMemorySetting(parseInt(e.target.value, 10))}
                 className="timer-select"
                 style={{ background: 'transparent', color: '#10b981', border: 'none', outline: 'none', cursor: 'pointer' }}
                 title="Tiempo para observar"
@@ -785,7 +790,7 @@ function App() {
         </div>
       </header>
 
-      <main className="game-area" ref={boardRef}>
+      <main className="game-area" ref={boardRef} style={gameMode === 'loci' ? { justifyContent: 'flex-start' } : undefined}>
         
         {/* ── Tablero de Juego (Reverso) ── */}
         {gameMode !== 'loci' && (
@@ -930,7 +935,7 @@ function App() {
         {/* ── Tablero Objetivo (Anverso) ── */}
         <div 
           className={`board-container target-container ${isInverted ? 'inverted-active' : ''} ${isError ? 'error-shake' : ''}`}
-          style={{ marginTop: gameMode === 'loci' ? '4vh' : '0' }}
+          style={{ marginTop: gameMode === 'loci' ? '8vh' : '0' }}
         >
           <span className="board-label" style={{ color: phase === 'LOCI_SUCCESS' ? '#10b981' : undefined }}>
             {phase === 'MEMORY_OBSERVATION' ? '🧠 Memoriza el Objetivo' :
