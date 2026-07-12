@@ -155,22 +155,34 @@ function App() {
 
   // ── Persistent Settings ────────────────────────────────────────────────────
   const [settings, setSettings] = useState(() => {
-    try {
-      const saved = localStorage.getItem('chess3x3_settings');
-      if (saved) return JSON.parse(saved);
-    } catch {}
-    return {
+    const defaults = {
       timerSetting: 30,
       memorySetting: 0,
       gameMode: 'chess', // 'chess' | 'loci'
       lociDifficulty: 5, // 3, 5, 9
     };
+    try {
+      const saved = localStorage.getItem('chess3x3_settings');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          ...defaults,
+          ...parsed,
+          timerSetting: parsed.timerSetting === 'inf' || parsed.timerSetting === null ? Infinity : Number(parsed.timerSetting ?? defaults.timerSetting),
+          memorySetting: Number(parsed.memorySetting ?? defaults.memorySetting),
+          lociDifficulty: Number(parsed.lociDifficulty ?? defaults.lociDifficulty)
+        };
+      }
+    } catch {}
+    return defaults;
   });
 
   const updateSetting = useCallback((key, value) => {
     setSettings(prev => {
       const updated = { ...prev, [key]: typeof value === 'function' ? value(prev[key]) : value };
-      localStorage.setItem('chess3x3_settings', JSON.stringify(updated));
+      const toSave = { ...updated };
+      if (toSave.timerSetting === Infinity) toSave.timerSetting = 'inf';
+      localStorage.setItem('chess3x3_settings', JSON.stringify(toSave));
       return updated;
     });
   }, []);
@@ -262,12 +274,7 @@ function App() {
     setCurrentLevel(0); // Reiniciar al primer nivel
   }, []);
 
-  // Actualizar timer inicial si se cambia la configuración en fase OBSERVATION antes de empezar
-  useEffect(() => {
-    if (phase === 'OBSERVATION') {
-      setTimeRemaining(timerSetting);
-    }
-  }, [timerSetting]); // omit phase so it only triggers on setting change (or unmount/mount)
+
 
   // ── Timer ──────────────────────────────────────────────────────────────────
   useEffect(() => {
