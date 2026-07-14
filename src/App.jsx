@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import './index.css';
 import { getValidMoves } from './logic/chessEngine';
 import generatedLevels from './logic/generated_levels.json';
