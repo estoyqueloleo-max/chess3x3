@@ -205,6 +205,28 @@ function App() {
   const [reconstructedBoard, setReconstructedBoard] = useState(Array(9).fill(null));
   const [memoryPalette, setMemoryPalette] = useState([]);
   const [selectedPaletteIdx, setSelectedPaletteIdx] = useState(null);
+  const [isMemoryReady, setIsMemoryReady] = useState(false);
+  const [lociStartTime, setLociStartTime] = useState(null);
+  const [lociErrors, setLociErrors] = useState(0);
+  const [activeTip, setActiveTip] = useState(null);
+  const [lociStats, setLociStats] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('chess3x3_loci_stats') || '{}'); }
+    catch { return {}; }
+  });
+
+  const [showSettings, setShowSettings] = useState(false);
+  const challengeSequential = settings.challengeSequential;
+  const challengeNoise = settings.challengeNoise;
+  const challengeDualTask = settings.challengeDualTask;
+  const setChallengeSequential = useCallback((val) => updateSetting('challengeSequential', val), [updateSetting]);
+  const setChallengeNoise = useCallback((val) => updateSetting('challengeNoise', val), [updateSetting]);
+  const setChallengeDualTask = useCallback((val) => updateSetting('challengeDualTask', val), [updateSetting]);
+
+  const [dualTaskQuestion, setDualTaskQuestion] = useState(null);
+  const [dualTaskAnswer, setDualTaskAnswer] = useState('');
+  const [dualTaskCorrectAnswer, setDualTaskCorrectAnswer] = useState(null);
+  const [seqIndex, setSeqIndex] = useState(0);
+  const [noisePieces, setNoisePieces] = useState({});
 
   // ── Level loading ──────────────────────────────────────────────────────────
   const loadLevel = useCallback((levelIndex) => {
@@ -235,6 +257,7 @@ function App() {
       const pieces = targetB.filter(p => p !== null);
       setMemoryPalette([...pieces].sort(() => Math.random() - 0.5));
       setSelectedPaletteIdx(null);
+      setIsMemoryReady(false);
     } else {
       setPhase('OBSERVATION');
       setTimeRemaining(timerSetting);
@@ -252,6 +275,9 @@ function App() {
     setIsFlipped(false);
     setRotateUsesLeft(1);
     setIsError(false);
+    setDualTaskQuestion(null);
+    setSeqIndex(0);
+    setNoisePieces({});
   }, [shuffledLevels, memorySetting, lociMemorySetting, timerSetting, gameMode, lociDifficulty]);
 
   useEffect(() => { loadLevel(currentLevel); }, [currentLevel, loadLevel]);
@@ -268,6 +294,59 @@ function App() {
         .catch(console.error);
     }
   }, []);
+
+  // ── Modificadores Loci ───────────────────────────────────────────────────────
+  useEffect(() => {
+    if (phase === 'MEMORY_OBSERVATION' && isMemoryReady && challengeDualTask && gameMode === 'loci') {
+      const initialTime = lociMemorySetting;
+      if (initialTime > 0) {
+        const timer = setTimeout(() => {
+          const a = Math.floor(Math.random() * 9) + 1;
+          const b = Math.floor(Math.random() * 9) + 1;
+          setDualTaskQuestion(`${a} + ${b} = ?`);
+          setDualTaskCorrectAnswer(a + b);
+          setDualTaskAnswer('');
+        }, (initialTime * 1000) / 2);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [phase, isMemoryReady, challengeDualTask, gameMode, lociMemorySetting]);
+
+  useEffect(() => {
+    if (phase === 'MEMORY_OBSERVATION' && isMemoryReady && challengeSequential && gameMode === 'loci') {
+      const activePiecesCount = targetBoard.filter(p => p !== null).length;
+      if (activePiecesCount > 0) {
+        const timer = setInterval(() => {
+          setSeqIndex(s => (s + 1) % activePiecesCount);
+        }, 1000);
+        return () => { clearInterval(timer); setSeqIndex(0); };
+      }
+    }
+  }, [phase, isMemoryReady, challengeSequential, gameMode, targetBoard]);
+
+  useEffect(() => {
+    if (phase === 'MEMORY_OBSERVATION' && isMemoryReady && challengeNoise && gameMode === 'loci') {
+      const timer = setInterval(() => {
+        const emptyIndices = targetBoard.map((p, i) => p === null ? i : null).filter(i => i !== null);
+        if (emptyIndices.length > 0) {
+          const numNoise = Math.random() > 0.5 ? 1 : 2;
+          const selected = [];
+          for (let i = 0; i < numNoise; i++) {
+            const idx = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+            if (!selected.includes(idx)) selected.push(idx);
+          }
+          const newNoise = {};
+          selected.forEach(idx => {
+            const randomEmoji = LOCI_EMOJIS[Math.floor(Math.random() * LOCI_EMOJIS.length)];
+            newNoise[idx] = { type: 'LOCI', emoji: randomEmoji, isNoise: true };
+          });
+          setNoisePieces(newNoise);
+          setTimeout(() => setNoisePieces({}), 300);
+        }
+      }, 800);
+      return () => { clearInterval(timer); setNoisePieces({}); };
+    }
+  }, [phase, isMemoryReady, challengeNoise, gameMode, targetBoard]);
 
   // Handle shuffle toggle
   const handleShuffleChange = useCallback((e) => {
@@ -286,17 +365,22 @@ function App() {
   // ── Timer ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     let timer;
-    if (timeRemaining > 0 && timeRemaining !== Infinity && (phase === 'OBSERVATION' || phase === 'MEMORY_OBSERVATION')) {
+    const isReady = phase === 'MEMORY_OBSERVATION' ? isMemoryReady : true;
+    if (isReady && timeRemaining > 0 && timeRemaining !== Infinity && (phase === 'OBSERVATION' || phase === 'MEMORY_OBSERVATION')) {
       timer = setTimeout(() => setTimeRemaining(t => t - 1), 1000);
-    } else if (timeRemaining === 0) {
+    } else if (isReady && timeRemaining === 0) {
       if (phase === 'MEMORY_OBSERVATION') {
         setPhase('MEMORY_RECONSTRUCTION');
+        if (gameMode === 'loci') {
+          setLociStartTime(Date.now());
+          setLociErrors(0);
+        }
       } else if (phase === 'OBSERVATION') {
         setPhase('BIDDING');
       }
     }
     return () => clearTimeout(timer);
-  }, [phase, timeRemaining]);
+  }, [phase, timeRemaining, isMemoryReady, gameMode]);
 
   // ── Win condition ──────────────────────────────────────────────────────────
   const checkWinCondition = useCallback((board, movesUsed) => {
@@ -438,6 +522,7 @@ function App() {
   const [dynamicPath, setDynamicPath] = useState(null);
   const [replayPaused, setReplayPaused] = useState(false);
   const [reviewAnalysis, setReviewAnalysis] = useState([]);
+  const [phaseBeforeReview, setPhaseBeforeReview] = useState(null);
 
   const startMoveReview = useCallback(() => {
     if (!wasmReady || !window.getOptimalPathWasm) return;
@@ -449,6 +534,7 @@ function App() {
     });
     
     setReviewAnalysis(analysis);
+    setPhaseBeforeReview(phase);
     setPhase('REVIEW_MOVES');
     setReplayStep(0);
     setCurrentBoard(fullHistory[0]);
@@ -466,6 +552,7 @@ function App() {
     
     if (path && path.length > 0) {
       setDynamicPath(path);
+      setPhaseBeforeReview(phase === 'EXECUTION' ? 'GAMEOVER' : phase);
       setPhase('SOLUTION_REPLAY');
       setReplayStep(0);
     } else {
@@ -474,20 +561,36 @@ function App() {
   }, [currentBoard, targetBoard, wasmReady, phase, currentLevel, isInverted, shuffledLevels]);
 
   useEffect(() => {
-    if (phase === 'SOLUTION_REPLAY' && !replayPaused) {
-      if (!dynamicPath || replayStep >= dynamicPath.length) {
-        setPhase('GAMEOVER'); // Terminó la animación
-        return;
+    if (!replayPaused) {
+      if (phase === 'SOLUTION_REPLAY' && dynamicPath) {
+        if (replayStep >= dynamicPath.length - 1) {
+          setReplayPaused(true);
+          return;
+        }
+        const timer = setTimeout(() => {
+          setReplayStep(r => {
+            const next = r + 1;
+            setCurrentBoard(dynamicPath[next].map(p => p));
+            return next;
+          });
+        }, 700);
+        return () => clearTimeout(timer);
+      } else if (phase === 'REVIEW_MOVES' && reviewAnalysis) {
+        if (replayStep >= reviewAnalysis.length - 1) {
+          setReplayPaused(true);
+          return;
+        }
+        const timer = setTimeout(() => {
+          setReplayStep(r => {
+            const next = r + 1;
+            setCurrentBoard(reviewAnalysis[next].state.map(p => p));
+            return next;
+          });
+        }, 700);
+        return () => clearTimeout(timer);
       }
-
-      const timer = setTimeout(() => {
-        setCurrentBoard(dynamicPath[replayStep].map(p => p));
-        setReplayStep(r => r + 1);
-      }, 700);
-
-      return () => clearTimeout(timer);
     }
-  }, [phase, replayStep, dynamicPath, replayPaused]);
+  }, [phase, replayStep, dynamicPath, reviewAnalysis, replayPaused]);
 
   // ── Click handler ──────────────────────────────────────────────────────────
   const handleCellClick = useCallback((index) => {
@@ -543,10 +646,18 @@ function App() {
         });
         if (isMatch) {
           if (gameMode === 'loci') {
+            const timeMs = lociStartTime ? Date.now() - lociStartTime : 0;
+            const timeS = (timeMs / 1000).toFixed(1);
+            setLociStats(prev => {
+              const diffStats = prev[lociDifficulty] || [];
+              const newStats = { time: timeS, errors: lociErrors, date: Date.now() };
+              const updated = { ...prev, [lociDifficulty]: [newStats, ...diffStats].slice(0, 10) };
+              localStorage.setItem('chess3x3_loci_stats', JSON.stringify(updated));
+              return updated;
+            });
             setPhase('LOCI_SUCCESS');
             setCurrentMovesCount(0);
             setTimeout(() => {
-              // Hacky way to generate next random combo without needing external deps
               loadLevel(currentLevel); 
             }, 1200);
           } else {
@@ -554,12 +665,27 @@ function App() {
             setTimeRemaining(timerSetting);
           }
         } else {
+          setLociErrors(e => e + 1);
           setIsError(true);
           setTimeout(() => setIsError(false), 800);
         }
       }
     }
-  }, [phase, reconstructedBoard, selectedPaletteIdx, memoryPalette, targetBoard, timerSetting, gameMode]);
+  }, [phase, reconstructedBoard, selectedPaletteIdx, memoryPalette, targetBoard, timerSetting, gameMode, lociStartTime, lociErrors, lociDifficulty]);
+
+  const handleTip = useCallback(() => {
+    if (phase !== 'MEMORY_RECONSTRUCTION') return;
+    const emptyIndices = [];
+    reconstructedBoard.forEach((p, i) => {
+      if (p === null && targetBoard[i] !== null) emptyIndices.push(i);
+    });
+    if (emptyIndices.length > 0) {
+      const randomIdx = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+      setActiveTip({ index: randomIdx, emoji: targetBoard[randomIdx].emoji });
+      setLociErrors(e => e + 3);
+      setTimeout(() => setActiveTip(null), 1000);
+    }
+  }, [phase, reconstructedBoard, targetBoard]);
 
   const handleResetLoci = useCallback(() => {
     setPhase('MEMORY_OBSERVATION');
@@ -568,6 +694,7 @@ function App() {
     const pieces = targetBoard.filter(p => p !== null);
     setMemoryPalette([...pieces].sort(() => Math.random() - 0.5));
     setSelectedPaletteIdx(null);
+    setIsMemoryReady(false);
     setIsError(false);
   }, [lociMemorySetting, targetBoard]);
 
@@ -672,6 +799,30 @@ function App() {
     ? (shuffledLevels[currentLevel]?.targetBoard ?? Array(9).fill(null))
     : flipBackBoard;
 
+  const displayTargetBoard = useMemo(() => {
+    if (phase !== 'MEMORY_OBSERVATION' || gameMode !== 'loci') return targetBoard;
+    
+    let board = [...targetBoard];
+
+    // Apply sequential filtering
+    if (challengeSequential && isMemoryReady) {
+      const piecesIndices = board.map((p, i) => p !== null ? i : null).filter(i => i !== null);
+      if (piecesIndices.length > 0) {
+        const visibleIdx = piecesIndices[seqIndex % piecesIndices.length];
+        board = board.map((p, i) => i === visibleIdx ? p : null);
+      }
+    }
+
+    // Apply noise
+    if (challengeNoise && isMemoryReady) {
+      Object.entries(noisePieces).forEach(([idx, piece]) => {
+        board[idx] = piece;
+      });
+    }
+
+    return board;
+  }, [phase, targetBoard, challengeSequential, isMemoryReady, seqIndex, challengeNoise, noisePieces, gameMode]);
+
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <>
@@ -730,6 +881,7 @@ function App() {
                 <option value="1">Mem: 1s</option>
                 <option value="2">Mem: 2s</option>
                 <option value="3">Mem: 3s</option>
+                <option value="5">Mem: 5s</option>
               </select>
               <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', color: '#94a3b8', fontSize: '0.8rem' }}>
                 <input 
@@ -744,42 +896,23 @@ function App() {
           )}
 
           {gameMode === 'loci' && (
-            <>
-              <select 
-                value={lociDifficulty} 
-                onChange={(e) => setLociDifficulty(parseInt(e.target.value, 10))}
-                className="timer-select"
-                style={{ background: 'transparent', color: '#8b5cf6', border: 'none', outline: 'none', cursor: 'pointer' }}
-                title="Cantidad de objetos a memorizar"
-              >
-                <option value="5">5 Objs</option>
-                <option value="6">6 Objs</option>
-                <option value="7">7 Objs</option>
-                <option value="8">8 Objs</option>
-                <option value="9">9 Objs</option>
-              </select>
-              <select 
-                value={lociMemorySetting} 
-                onChange={(e) => setLociMemorySetting(parseInt(e.target.value, 10))}
-                className="timer-select"
-                style={{ background: 'transparent', color: '#10b981', border: 'none', outline: 'none', cursor: 'pointer' }}
-                title="Tiempo para observar"
-              >
-                <option value="0">Tiempo: ∞</option>
-                <option value="1">Tiempo: 1s</option>
-                <option value="2">Tiempo: 2s</option>
-                <option value="3">Tiempo: 3s</option>
-                <option value="5">Tiempo: 5s</option>
-                <option value="10">Tiempo: 10s</option>
-              </select>
-            </>
+            <span style={{ color: '#8b5cf6', fontSize: '0.8rem', fontWeight: 600 }}>
+              {lociDifficulty} Objetos
+            </span>
           )}
         </div>
-        <button
-          onClick={() => setShowStats(true)}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: '0 6px', opacity: 0.7 }}
-          title="Ver estadísticas"
-        >🏆</button>
+        <div style={{ display: 'flex', gap: '5px' }}>
+          <button
+            onClick={() => setShowStats(true)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: '0 6px', opacity: 0.7 }}
+            title="Ver estadísticas"
+          >🏆</button>
+          <button
+            onClick={() => setShowSettings(true)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: '0 6px', opacity: 0.7 }}
+            title="Ajustes y Retos"
+          >⚙️</button>
+        </div>
         <div className="header-timer">
           {(phase === 'OBSERVATION' || phase === 'MEMORY_OBSERVATION') && timeRemaining === Infinity && `∞`}
           {(phase === 'OBSERVATION' || phase === 'MEMORY_OBSERVATION') && timeRemaining !== Infinity && `${timeRemaining.toString().padStart(2, '0')}s`}
@@ -792,10 +925,31 @@ function App() {
 
       <main className="game-area" ref={boardRef} style={gameMode === 'loci' ? { justifyContent: 'flex-start' } : undefined}>
         
-        {/* ── Tablero de Juego (Reverso) ── */}
-        {gameMode !== 'loci' && (
-          <div className={`board-container play-container ${isInverted ? 'inverted-active' : ''}`}>
-          <span className="board-label">
+        {phase === 'MEMORY_OBSERVATION' && !isMemoryReady ? (
+          <div style={{ display: 'flex', flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '300px' }}>
+            <button
+              onClick={() => setIsMemoryReady(true)}
+              style={{
+                fontSize: '2rem',
+                padding: '20px 40px',
+                background: '#10b981',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+                fontWeight: 'bold'
+              }}
+            >
+              ▶ Empezar
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* ── Tablero de Juego (Reverso) ── */}
+            {gameMode !== 'loci' && (
+              <div className={`board-container play-container ${isInverted ? 'inverted-active' : ''}`}>
+              <span className="board-label">
             {phase === 'SOLUTION_REPLAY'
               ? `▶ Paso ${Math.min(replayStep, dynamicPath ? dynamicPath.length - 1 : 0) + 1} / ${dynamicPath?.length ?? '?'}`
               : phase === 'REVIEW_MOVES'
@@ -819,7 +973,7 @@ function App() {
           {(phase === 'SOLUTION_REPLAY' && dynamicPath) || (phase === 'REVIEW_MOVES' && reviewAnalysis.length > 0) ? (
             <div style={{ width: '100%', padding: '6px 0 0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {phase === 'SOLUTION_REPLAY' && (
+                {(phase === 'SOLUTION_REPLAY' || phase === 'REVIEW_MOVES') && (
                   <button
                     onClick={() => setReplayPaused(p => !p)}
                     style={{
@@ -841,8 +995,8 @@ function App() {
                   min={0}
                   max={phase === 'SOLUTION_REPLAY' ? dynamicPath.length - 1 : reviewAnalysis.length - 1}
                   value={Math.min(replayStep, phase === 'SOLUTION_REPLAY' ? dynamicPath.length - 1 : reviewAnalysis.length - 1)}
-                  onMouseDown={() => phase === 'SOLUTION_REPLAY' && setReplayPaused(true)}
-                  onTouchStart={() => phase === 'SOLUTION_REPLAY' && setReplayPaused(true)}
+                  onMouseDown={() => setReplayPaused(true)}
+                  onTouchStart={() => setReplayPaused(true)}
                   onChange={(e) => {
                     const step = parseInt(e.target.value, 10);
                     setReplayStep(step);
@@ -873,6 +1027,20 @@ function App() {
 
         {/* ── Barra de acciones de tarjeta ── */}
         <div className="board-actions">
+          {/* Volver desde Replay/Review */}
+          {(phase === 'SOLUTION_REPLAY' || phase === 'REVIEW_MOVES') && (
+            <button
+              className="btn-action"
+              onClick={() => {
+                setReplayPaused(true);
+                setPhase(phaseBeforeReview || 'GAMEOVER');
+              }}
+              style={{ color: '#3b82f6', borderColor: 'rgba(59, 130, 246, 0.4)' }}
+              title="Volver a la pantalla final"
+            >
+              🔙 Volver
+            </button>
+          )}
           {/* Botón ¡Lo tengo! rápido */}
           {phase === 'OBSERVATION' && (
             <button
@@ -947,7 +1115,7 @@ function App() {
           {phase === 'MEMORY_RECONSTRUCTION' || phase === 'LOCI_SUCCESS' ? (
             <>
               <Board
-                board={reconstructedBoard}
+                board={reconstructedBoard.map((p, i) => activeTip && i === activeTip.index ? { type: 'LOCI', emoji: activeTip.emoji } : p)}
                 isInteractive={true}
                 selectedCell={null}
                 validMoves={[]}
@@ -969,6 +1137,16 @@ function App() {
               
               {gameMode === 'loci' && (
                 <div className="board-actions" style={{ marginTop: '20px' }}>
+                  {phase === 'MEMORY_RECONSTRUCTION' && (
+                    <button 
+                      className="btn-action" 
+                      onClick={handleTip}
+                      style={{ color: '#f59e0b', borderColor: 'rgba(245, 158, 11, 0.4)' }}
+                      title="Muestra una posición correcta temporalmente por +3 errores"
+                    >
+                      💡 Pista (+3 Errores)
+                    </button>
+                  )}
                   <button 
                     className="btn-action" 
                     onClick={handleResetLoci}
@@ -980,18 +1158,36 @@ function App() {
               )}
             </>
           ) : (
-            <FlippableBoard
-              frontBoard={phase === 'MEMORY_OBSERVATION' ? targetBoard : targetBoard}
-              backBoard={flipBackBoardEffective}
-              isFlipped={isFlipped}
-              isInteractive={false}
-              selectedCell={null}
-              validMoves={[]}
-             
-            />
+            <>
+              {dualTaskQuestion && phase === 'MEMORY_OBSERVATION' && (
+                <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,23,42,0.95)', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '8px' }}>
+                  <h3 style={{ color: '#ef4444', fontSize: '1.2rem', marginBottom: '15px', textTransform: 'uppercase', letterSpacing: '1px' }}>¡Doble Tarea!</h3>
+                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f8fafc', marginBottom: '15px' }}>{dualTaskQuestion}</div>
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    if (parseInt(dualTaskAnswer, 10) === dualTaskCorrectAnswer) {
+                      setDualTaskQuestion(null);
+                    } else {
+                      setDualTaskAnswer('');
+                    }
+                  }}>
+                    <input type="number" value={dualTaskAnswer} onChange={e => setDualTaskAnswer(e.target.value)} autoFocus style={{ fontSize: '1.8rem', width: '100px', textAlign: 'center', borderRadius: '8px', border: '2px solid #3b82f6', background: '#1e293b', color: '#fff', outline: 'none' }} />
+                  </form>
+                </div>
+              )}
+              <FlippableBoard
+                frontBoard={displayTargetBoard}
+                backBoard={flipBackBoardEffective}
+                isFlipped={isFlipped}
+                isInteractive={false}
+                selectedCell={null}
+                validMoves={[]}
+              />
+            </>
           )}
         </div>
-
+        </>
+        )}
       </main>
 
       {/* Ghost pieza arrastrando */}
@@ -1087,82 +1283,196 @@ function App() {
               <button onClick={() => setShowStats(false)} style={{ background: 'none', border: '1px solid #334155', color: '#94a3b8', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer' }}>✕</button>
             </div>
 
-            {/* Contadores */}
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexShrink: 0 }}>
-              {[
-                { val: totalSolved, label: 'Resueltos', color: '#3b82f6' },
-                { val: totalPerfect, label: 'Perfectos ⭐', color: '#f59e0b' },
-                { val: generatedLevels.length - totalSolved, label: 'Pendientes', color: '#64748b' },
-              ].map(({ val, label, color }) => (
-                <div key={label} style={{ textAlign: 'center', background: 'rgba(30,41,59,0.7)', borderRadius: '10px', padding: '8px 14px' }}>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 800, color }}>{val}</div>
-                  <div style={{ fontSize: '0.68rem', color: '#94a3b8' }}>{label}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Grid auto-escalado para llenar el espacio disponible */}
-            <div
-              style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                overflow: 'hidden',
-                minHeight: 0,
-              }}
-            >
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(10, 1fr)',
-                  gap: '3px',
-                  width: 'min(100%, min(90dvh, 90dvw))',
-                }}
-              >
-                {generatedLevels.map((lvl, i) => {
-                  const best = records[lvl.id];
-                  const isPerfect = best !== undefined && best <= lvl.optimalMoves;
-                  const isSolved = best !== undefined;
-                  return (
-                    <button
-                      key={lvl.id}
-                      onClick={() => {
-                        const idx = shuffledLevels.findIndex(l => l.id === lvl.id);
-                        if (idx !== -1) { setCurrentLevel(idx); setShowStats(false); }
-                      }}
-                      title={isSolved ? `Mejor: ${best} mov (óptimo: ${lvl.optimalMoves})` : `Sin resolver`}
-                      style={{
-                        aspectRatio: '1',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontSize: 'clamp(0.45rem, 1.5vw, 0.7rem)',
-                        fontWeight: 700,
-                        background: isPerfect
-                          ? 'rgba(245, 158, 11, 0.85)'
-                          : isSolved
-                            ? 'rgba(59, 130, 246, 0.6)'
-                            : 'rgba(51, 65, 85, 0.6)',
-                        color: isSolved ? '#fff' : '#64748b',
-                        transition: 'transform 0.1s',
-                      }}
-                      onPointerDown={e => e.currentTarget.style.transform = 'scale(0.9)'}
-                      onPointerUp={e => e.currentTarget.style.transform = 'scale(1)'}
-                    >
-                      {isSolved ? best : i + 1}
-                    </button>
-                  );
-                })}
+            {gameMode === 'loci' ? (
+              <div style={{ flex: 1, overflowY: 'auto', marginTop: '20px' }}>
+                {Object.keys(lociStats).length === 0 ? (
+                  <div style={{ textAlign: 'center', color: '#94a3b8', marginTop: '40px' }}>No hay estadísticas todavía.</div>
+                ) : (
+                  Object.keys(lociStats).sort((a, b) => b - a).map(diff => (
+                    <div key={diff} style={{ marginBottom: '20px' }}>
+                      <h3 style={{ color: '#8b5cf6', margin: '0 0 10px 0', fontSize: '1rem' }}>Objetos: {diff}</h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {lociStats[diff].map((stat, idx) => (
+                          <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', background: 'rgba(30,41,59,0.5)', padding: '8px 12px', borderRadius: '6px' }}>
+                            <span style={{ color: '#e2e8f0' }}>⏱️ {stat.time}s</span>
+                            <span style={{ color: stat.errors === 0 ? '#10b981' : '#ef4444' }}>❌ {stat.errors} errores</span>
+                            <span style={{ color: '#64748b', fontSize: '0.8rem' }}>{new Date(stat.date).toLocaleDateString()}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
+            ) : (
+              <>
+                {/* Contadores */}
+                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexShrink: 0 }}>
+                  {[
+                    { val: totalSolved, label: 'Resueltos', color: '#3b82f6' },
+                    { val: totalPerfect, label: 'Perfectos ⭐', color: '#f59e0b' },
+                    { val: generatedLevels.length - totalSolved, label: 'Pendientes', color: '#64748b' },
+                  ].map(({ val, label, color }) => (
+                    <div key={label} style={{ textAlign: 'center', background: 'rgba(30,41,59,0.7)', borderRadius: '10px', padding: '8px 14px' }}>
+                      <div style={{ fontSize: '1.6rem', fontWeight: 800, color }}>{val}</div>
+                      <div style={{ fontSize: '0.68rem', color: '#94a3b8' }}>{label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Grid auto-escalado para llenar el espacio disponible */}
+                <div
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                    minHeight: 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(10, 1fr)',
+                      gap: '3px',
+                      width: 'min(100%, min(90dvh, 90dvw))',
+                    }}
+                  >
+                    {generatedLevels.map((lvl, i) => {
+                      const best = records[lvl.id];
+                      const isPerfect = best !== undefined && best <= lvl.optimalMoves;
+                      const isSolved = best !== undefined;
+                      return (
+                        <button
+                          key={lvl.id}
+                          onClick={() => {
+                            const idx = shuffledLevels.findIndex(l => l.id === lvl.id);
+                            if (idx !== -1) { setCurrentLevel(idx); setShowStats(false); }
+                          }}
+                          title={isSolved ? `Mejor: ${best} mov (óptimo: ${lvl.optimalMoves})` : `Sin resolver`}
+                          style={{
+                            aspectRatio: '1',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: 'clamp(0.45rem, 1.5vw, 0.7rem)',
+                            fontWeight: 700,
+                            background: isPerfect
+                              ? 'rgba(245, 158, 11, 0.85)'
+                              : isSolved
+                                ? 'rgba(59, 130, 246, 0.6)'
+                                : 'rgba(51, 65, 85, 0.6)',
+                            color: isSolved ? '#fff' : '#64748b',
+                            transition: 'transform 0.1s',
+                          }}
+                          onPointerDown={e => e.currentTarget.style.transform = 'scale(0.9)'}
+                          onPointerUp={e => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                          {isSolved ? best : i + 1}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Leyenda */}
+                <div style={{ textAlign: 'center', fontSize: '0.65rem', color: '#475569', flexShrink: 0 }}>
+                  <span style={{ color: '#f59e0b' }}>● Perfecto</span>&nbsp;&nbsp;
+                  <span style={{ color: '#3b82f6' }}>● Resuelto</span>&nbsp;&nbsp;
+                  <span style={{ color: '#475569' }}>● Pendiente</span>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Ajustes (Retos y Configuraciones) */}
+      {showSettings && (
+        <div
+          onClick={() => setShowSettings(false)}
+          style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(2, 6, 23, 0.96)', display: 'flex', flexDirection: 'column', padding: '12px', boxSizing: 'border-box' }}
+        >
+          <div onClick={e => e.stopPropagation()} style={{ background: '#1e293b', borderRadius: '12px', padding: '20px', margin: 'auto', maxWidth: '400px', width: '100%', color: '#f8fafc', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#f1f5f9' }}>⚙️ Ajustes</h2>
+              <button onClick={() => setShowSettings(false)} style={{ background: 'none', border: '1px solid #334155', color: '#94a3b8', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer' }}>✕</button>
+            </div>
+            
+            {gameMode === 'loci' && (
+              <div style={{ marginBottom: '20px' }}>
+                <h3 style={{ fontSize: '1rem', color: '#8b5cf6', marginBottom: '10px' }}>Modificadores de Concentración</h3>
+                
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={challengeSequential} onChange={e => setChallengeSequential(e.target.checked)} />
+                  <div>
+                    <div style={{ fontWeight: 'bold' }}>Aparición Secuencial</div>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Los iconos aparecen de uno en uno.</div>
+                  </div>
+                </label>
+                
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={challengeNoise} onChange={e => setChallengeNoise(e.target.checked)} />
+                  <div>
+                    <div style={{ fontWeight: 'bold' }}>Ruido Visual</div>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Aparecen iconos fantasma intermitentes para distraerte.</div>
+                  </div>
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={challengeDualTask} onChange={e => setChallengeDualTask(e.target.checked)} />
+                  <div>
+                    <div style={{ fontWeight: 'bold' }}>Doble Tarea (Problema Matemático)</div>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Un problema interrumpe tu visión a mitad de tiempo. ¡Resuélvelo rápido!</div>
+                  </div>
+                </label>
+              </div>
+            )}
+            
+            <div>
+              <h3 style={{ fontSize: '1rem', color: '#10b981', marginBottom: '10px' }}>Configuración General</h3>
+              {gameMode === 'loci' ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>Objetos:</span>
+                    <select value={lociDifficulty} onChange={(e) => setLociDifficulty(parseInt(e.target.value, 10))} style={{ background: '#334155', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: '4px' }}>
+                      <option value="5">5 Objs</option>
+                      <option value="6">6 Objs</option>
+                      <option value="7">7 Objs</option>
+                      <option value="8">8 Objs</option>
+                      <option value="9">9 Objs</option>
+                    </select>
+                  </label>
+                  <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>Tiempo de Observación:</span>
+                    <select value={lociMemorySetting} onChange={(e) => setLociMemorySetting(parseInt(e.target.value, 10))} style={{ background: '#334155', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: '4px' }}>
+                      <option value="0">∞</option>
+                      <option value="1">1s</option>
+                      <option value="2">2s</option>
+                      <option value="3">3s</option>
+                      <option value="5">5s</option>
+                      <option value="10">10s</option>
+                    </select>
+                  </label>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>Tiempo:</span>
+                    <select value={timerSetting === Infinity ? 'inf' : timerSetting} onChange={(e) => {
+                      const val = e.target.value === 'inf' ? Infinity : parseInt(e.target.value, 10);
+                      setTimerSetting(val);
+                    }} style={{ background: '#334155', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: '4px' }}>
+                      <option value="30">30s</option>
+                      <option value="60">60s</option>
+                      <option value="inf">∞</option>
+                    </select>
+                  </label>
+                </div>
+              )}
             </div>
 
-            {/* Leyenda */}
-            <div style={{ textAlign: 'center', fontSize: '0.65rem', color: '#475569', flexShrink: 0 }}>
-              <span style={{ color: '#f59e0b' }}>● Perfecto</span>&nbsp;&nbsp;
-              <span style={{ color: '#3b82f6' }}>● Resuelto</span>&nbsp;&nbsp;
-              <span style={{ color: '#475569' }}>● Pendiente</span>
-            </div>
           </div>
         </div>
       )}
