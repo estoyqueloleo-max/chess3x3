@@ -225,6 +225,7 @@ function App() {
   const [dualTaskQuestion, setDualTaskQuestion] = useState(null);
   const [dualTaskAnswer, setDualTaskAnswer] = useState('');
   const [dualTaskCorrectAnswer, setDualTaskCorrectAnswer] = useState(null);
+  const [dualTaskTimeLeft, setDualTaskTimeLeft] = useState(null);
   const [seqIndex, setSeqIndex] = useState(0);
   const [noisePieces, setNoisePieces] = useState({});
 
@@ -276,6 +277,7 @@ function App() {
     setRotateUsesLeft(1);
     setIsError(false);
     setDualTaskQuestion(null);
+    setDualTaskTimeLeft(null);
     setSeqIndex(0);
     setNoisePieces({});
   }, [shuffledLevels, memorySetting, lociMemorySetting, timerSetting, gameMode, lociDifficulty]);
@@ -306,6 +308,7 @@ function App() {
           setDualTaskQuestion(`${a} + ${b} = ?`);
           setDualTaskCorrectAnswer(a + b);
           setDualTaskAnswer('');
+          setDualTaskTimeLeft(3);
         }, (initialTime * 1000) / 2);
         return () => clearTimeout(timer);
       }
@@ -313,16 +316,33 @@ function App() {
   }, [phase, isMemoryReady, challengeDualTask, gameMode, lociMemorySetting]);
 
   useEffect(() => {
+    if (dualTaskQuestion && dualTaskTimeLeft !== null) {
+      if (dualTaskTimeLeft > 0) {
+        const timer = setTimeout(() => setDualTaskTimeLeft(t => t - 1), 1000);
+        return () => clearTimeout(timer);
+      } else {
+        setLociErrors(e => e + 1);
+        setDualTaskQuestion(null);
+        setDualTaskTimeLeft(null);
+      }
+    }
+  }, [dualTaskQuestion, dualTaskTimeLeft]);
+
+  useEffect(() => {
     if (phase === 'MEMORY_OBSERVATION' && isMemoryReady && challengeSequential && gameMode === 'loci') {
       const activePiecesCount = targetBoard.filter(p => p !== null).length;
       if (activePiecesCount > 0) {
+        let intervalMs = 1000;
+        if (lociMemorySetting > 0) {
+          intervalMs = Math.max(200, (lociMemorySetting * 1000) / activePiecesCount);
+        }
         const timer = setInterval(() => {
           setSeqIndex(s => (s + 1) % activePiecesCount);
-        }, 1000);
+        }, intervalMs);
         return () => { clearInterval(timer); setSeqIndex(0); };
       }
     }
-  }, [phase, isMemoryReady, challengeSequential, gameMode, targetBoard]);
+  }, [phase, isMemoryReady, challengeSequential, gameMode, targetBoard, lociMemorySetting]);
 
   useEffect(() => {
     if (phase === 'MEMORY_OBSERVATION' && isMemoryReady && challengeNoise && gameMode === 'loci') {
@@ -366,9 +386,11 @@ function App() {
   useEffect(() => {
     let timer;
     const isReady = phase === 'MEMORY_OBSERVATION' ? isMemoryReady : true;
-    if (isReady && timeRemaining > 0 && timeRemaining !== Infinity && (phase === 'OBSERVATION' || phase === 'MEMORY_OBSERVATION')) {
+    const isDualTaskBlocking = dualTaskQuestion !== null;
+    
+    if (!isDualTaskBlocking && isReady && timeRemaining > 0 && timeRemaining !== Infinity && (phase === 'OBSERVATION' || phase === 'MEMORY_OBSERVATION')) {
       timer = setTimeout(() => setTimeRemaining(t => t - 1), 1000);
-    } else if (isReady && timeRemaining === 0) {
+    } else if (!isDualTaskBlocking && isReady && timeRemaining === 0) {
       if (phase === 'MEMORY_OBSERVATION') {
         setPhase('MEMORY_RECONSTRUCTION');
         if (gameMode === 'loci') {
@@ -380,7 +402,7 @@ function App() {
       }
     }
     return () => clearTimeout(timer);
-  }, [phase, timeRemaining, isMemoryReady, gameMode]);
+  }, [phase, timeRemaining, isMemoryReady, gameMode, dualTaskQuestion]);
 
   // ── Win condition ──────────────────────────────────────────────────────────
   const checkWinCondition = useCallback((board, movesUsed) => {
@@ -1161,12 +1183,15 @@ function App() {
             <>
               {dualTaskQuestion && phase === 'MEMORY_OBSERVATION' && (
                 <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,23,42,0.95)', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '8px' }}>
-                  <h3 style={{ color: '#ef4444', fontSize: '1.2rem', marginBottom: '15px', textTransform: 'uppercase', letterSpacing: '1px' }}>¡Doble Tarea!</h3>
+                  <h3 style={{ color: '#ef4444', fontSize: '1.2rem', marginBottom: '15px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    ¡Doble Tarea! <span style={{ color: '#f8fafc', marginLeft: '10px' }}>⏱️ {dualTaskTimeLeft}s</span>
+                  </h3>
                   <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f8fafc', marginBottom: '15px' }}>{dualTaskQuestion}</div>
                   <form onSubmit={(e) => {
                     e.preventDefault();
                     if (parseInt(dualTaskAnswer, 10) === dualTaskCorrectAnswer) {
                       setDualTaskQuestion(null);
+                      setDualTaskTimeLeft(null);
                     } else {
                       setDualTaskAnswer('');
                     }
